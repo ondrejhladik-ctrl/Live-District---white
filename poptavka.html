@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live District — Nezávazná poptávka</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="animations.js" defer></script>
+</head>
+<body class="subpage">
+
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <img src="logo dirtict.svg" alt="Live District" class="preloader-logo-img">
+            <div class="preloader-line"></div>
+        </div>
+    </div>
+
+    <header class="subpage-header">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="poptavka.html" class="nav-link">NEVÁZANÁ POPTÁVKA</a>
+                <a href="eventy.html" class="nav-link">EVENTY</a>
+            </div>
+            <div class="nav-center">
+                <a href="index.html"><img src="logo dirtict.svg" alt="Live District Logo" class="logo"></a>
+            </div>
+            <div class="nav-right">
+                <a href="umelci.html" class="nav-link">UMĚLCI</a>
+                <a href="tym.html" class="nav-link">TÝM</a>
+                <a href="#kontakt" class="nav-link">KONTAKT</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="page-main">
+        <section class="form-section">
+            <div class="container">
+                <div class="form-intro">
+                    <h1>Nezávazná poptávka</h1>
+                    <p>Pro zajištění umělce a profesionální podporu při plánování vaší akce vyplňte, prosím, tento formulář.</p>
+                </div>
+
+                <form class="inquiry-form" action="#" method="post">
+                    <div class="field">
+                        <label for="typ">Typ akce</label>
+                        <input type="text" id="typ" name="typ_akce">
+                    </div>
+                    <div class="field">
+                        <label for="umelec">Vybraný umělec / umělci</label>
+                        <input type="text" id="umelec" name="umelec">
+                    </div>
+                    <div class="field">
+                        <label for="misto">Místo konání</label>
+                        <input type="text" id="misto" name="misto">
+                    </div>
+                    <div class="field">
+                        <label for="termin">Preferovaný termín</label>
+                        <input type="text" id="termin" name="termin">
+                    </div>
+                    <div class="field">
+                        <label for="osoba">Kontaktní osoba</label>
+                        <input type="text" id="osoba" name="osoba">
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="field">
+                        <label for="telefon">Telefon</label>
+                        <input type="tel" id="telefon" name="telefon">
+                    </div>
+                    <div class="field">
+                        <label for="detail">Detail poptávky</label>
+                        <textarea id="detail" name="detail"></textarea>
+                    </div>
+                    <button type="submit" class="form-submit">Odeslat</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+            <footer class="site-footer" id="kontakt">
+        <div class="footer-top">
+            <a href="index.html" class="footer-logo">
+                <img src="logo dirtict.svg" alt="Live District">
+            </a>
+            <nav class="footer-nav">
+                <a href="eventy.html">EVENTY</a>
+                <a href="umelci.html">UMĚLCI</a>
+                <a href="index.html#o-agenture">O&nbsp;AGENTU&#345;E</a>
+                <a href="#kontakt">KONTAKT</a>
+            </nav>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <span>&#169;2026 LIVE DISTRICT</span>
+                <span class="separator">&#8226;</span>
+                <span>Booking a management současných umělců.</span>
+            </div>
+            <div class="footer-bottom-right">
+                <a href="mailto:booking@livedistrict.eu">booking@livedistrict.eu</a>
+                <span class="separator">&#8226;</span>
+                <span>IČO: 01744933</span>
+                <span class="separator">&#8226;</span>
+                <a href="#">Ochrana osobních údajů</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var pl = document.getElementById('preloader');
+            if (!pl) return;
+            if (sessionStorage.getItem('ld_pl')) { pl.style.display = 'none'; return; }
+            var minShow = 1400, t0 = Date.now();
+            function hide() {
+                var wait = Math.max(0, minShow - (Date.now() - t0));
+                setTimeout(function () {
+                    pl.classList.add('is-hidden');
+                    setTimeout(function () { pl.style.display = 'none'; sessionStorage.setItem('ld_pl', '1'); }, 1300);
+                }, wait);
+            }
+            if (document.readyState === 'complete') { hide(); } else { window.addEventListener('load', hide); }
+        })();
+    </script>
+</body>
+</html>
+
+
