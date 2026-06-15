@@ -13,10 +13,13 @@
     --card-gap:        96px;
     --space-section:   150px;
     --space-title:     70px;
+    --radius:          4px;
 
     /* — Accent palette — */
     --violet-1: 188,179,255;
     --violet-2: 113,107,153;
+    /* Hlavní akcentní barva (použij jako rgba(var(--accent),opacity)) */
+    --accent: 188,179,255;
 
     /* — Background tones — */
     --bg-dark:      #0a0510;
@@ -154,8 +157,8 @@ a { color:inherit; }
     content:''; position:absolute; bottom:-4px; left:50%;
     transform:translateX(-50%);
     height:1px; width:0%; opacity:0;
-    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%);
-    box-shadow:0px 1px 4px rgba(255,255,255,0.4);
+    background:linear-gradient(90deg, transparent 0%, rgba(var(--accent),0.9) 50%, transparent 100%);
+    box-shadow:0px 1px 5px rgba(var(--accent),0.45);
     transition:width 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
 }
 .nav-link:hover::after { width:100%; opacity:1; }
@@ -198,7 +201,7 @@ a { color:inherit; }
     position:relative; overflow:hidden;
     background: var(--bg-card);
     border:1px solid var(--border-subtle);
-    border-radius:4px; cursor:pointer;
+    border-radius:4px; cursor:none;
     transition:border-color var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out), filter var(--t-med) var(--ease-out);
 }
 .artist-card:hover { border-color: var(--border-hover); }
@@ -265,7 +268,7 @@ a { color:inherit; }
     font-family: var(--font-light);
     font-size: clamp(18px, 2.8vw, 36px);
     line-height:1;
-    height:61px; cursor:pointer;
+    height:61px; cursor:none;
     position:relative; background:none;
     border-radius:6px;
     transition:transform 0.5s var(--ease-spring), background-color 0.4s var(--ease-spring);
@@ -277,6 +280,20 @@ a { color:inherit; }
 .events-row .col-club   { color:#fff; }
 .events-row .col-umelec { color:#fff; font-family: var(--font-bold); }
 .events-row:hover .col-lokace { color:#fff; }
+.highlight-row { background-color: rgba(var(--accent),0.07); }
+.highlight-row .col-kdy { color:rgba(var(--accent),0.9); }
+
+/* Stránka EVENTY */
+.events-page-section {
+    width:100%; padding:clamp(60px,8vh,100px) 0 clamp(80px,12vh,140px) 0;
+}
+.events-page-title {
+    font-family: var(--font-extended);
+    font-size: clamp(28px, 3.5vw, 46px);
+    letter-spacing:-0.02em;
+    text-align:center; text-transform:uppercase;
+    margin:40px 0 clamp(40px,6vh,80px) 0; font-weight:normal;
+}
 
 /* =========================================================
    SEKCE O AGENTUŘE
@@ -527,7 +544,9 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     font-family: var(--font-extended); font-size:21px;
     letter-spacing:-0.01em; text-transform:uppercase;
     text-decoration:none;
+    transition: color 0.35s var(--ease-out);
 }
+.gallery-card:hover .card-name { color:rgba(var(--accent),0.9); }
 .artist-socials { display:flex; gap:14px; align-items:center; }
 .artist-socials a {
     opacity:1; color:#fff;
@@ -557,20 +576,26 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     text-transform:uppercase; margin-bottom:12px; color: var(--text-dim-3);
 }
 .field input, .field textarea {
-    width:100%; font-family: var(--font-light); font-size:17px; color:#fff;
-    background:rgba(255,255,255,0.05); border:1px solid var(--border-mid);
+    width:100%; font-family: var(--font-light); font-size:17px; color:#fff; cursor:text;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.22);
     border-radius:4px; padding:15px 18px;
-    transition:border-color 0.5s var(--ease-spring), background 0.5s var(--ease-spring);
+    transition:border-color 0.5s var(--ease-spring), background 0.5s var(--ease-spring),
+               box-shadow 0.5s var(--ease-spring);
 }
 .field input { height:58px; }
 .field textarea { min-height:150px; resize:vertical; }
+.field input::placeholder, .field textarea::placeholder {
+    color:rgba(255,255,255,0.28); font-family: var(--font-light);
+}
 .field input:focus, .field textarea:focus {
-    outline:none; background:rgba(255,255,255,0.06); border-color:rgba(var(--violet-1),0.6);
+    outline:none; background:rgba(255,255,255,0.07);
+    border-color:rgba(var(--violet-1),0.7);
+    box-shadow:0 0 0 3px rgba(var(--violet-1),0.10);
 }
 
 .form-submit {
     align-self:flex-end; margin-top:14px; font-family: var(--font-bold);
-    font-size:14px; letter-spacing:0.1em; text-transform:uppercase; color:#fff; cursor:pointer;
+    font-size:14px; letter-spacing:0.1em; text-transform:uppercase; color:#fff; cursor:none;
     padding:18px 50px; border:1px solid rgba(255,255,255,0.22);
     background:linear-gradient(180deg, rgba(var(--violet-2),0.20) 0%, rgba(var(--violet-1),0.06) 100%);
     border-radius:3px;
@@ -710,17 +735,6 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 .artist-page .events-section { padding-top:40px; }
 
 /* =========================================================
-   STRÁNKA EVENTY
-========================================================= */
-.events-page-section { padding:60px 0 150px 0; }
-.events-page-title {
-    font-family: var(--font-extended);
-    font-size: clamp(28px, 3.5vw, 46px);
-    letter-spacing:-0.02em;
-    text-align:center; margin:40px 0 90px 0; text-transform:uppercase;
-}
-
-/* =========================================================
    RESPONZIVITA
 ========================================================= */
 @media (max-width:1200px) {
@@ -760,6 +774,22 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     .events-row { grid-template-columns:1.2fr 1.5fr 0 0; }
     .events-row .col-club, .events-header .col-club,
     .events-row .col-umelec, .events-header .col-umelec { display:none; }
+}
+@media (max-width:480px) {
+    :root { --container-pad:16px; --space-section:64px; }
+    .top-nav { flex-direction:column; align-items:center; gap:14px; padding-top:20px; padding-bottom:14px; }
+    .nav-left, .nav-right { gap:18px; justify-content:center; flex:unset; }
+    .nav-center { display:none; }
+    .hero-title-container { width:92%; }
+    .section-title { font-size: clamp(28px, 8vw, 42px); }
+    .artists-section { padding-top:60px; }
+    .events-page-title { font-size:clamp(24px, 7vw, 36px); }
+    .gallery-grid { gap:20px; }
+    .team-panel { padding:20px; }
+    .form-submit { align-self:stretch; text-align:center; }
+    .artist-hero-name span { font-size:clamp(40px, 15vw, 100px); }
+    .footer-bottom-left, .footer-bottom-right { flex-direction:column; align-items:flex-start; gap:4px; }
+    .separator { display:none; }
 }
 
 .gallery-card a { text-decoration:none; }
@@ -812,11 +842,9 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 
 /* Scroll progress bar */
 .scroll-bar {
-    position:fixed; top:0; left:50%; height:2px; width:0%;
-    transform:translateX(-50%);
-    background:#fff;
-    box-shadow:none;
-    mix-blend-mode:difference;
+    position:fixed; top:0; left:0; height:2px; width:0%;
+    background:rgba(var(--accent),0.80);
+    mix-blend-mode:normal;
     z-index:9999; pointer-events:none;
     transition:width 0.1s ease-out;
 }
@@ -894,6 +922,22 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 /* =========================================================
    SCROLLED NAV STATE
 ========================================================= */
+.subpage-header,
+.artist-hero .top-nav {
+    transition: background 0.45s var(--ease-out),
+                backdrop-filter 0.45s var(--ease-out),
+                -webkit-backdrop-filter 0.45s var(--ease-out),
+                mix-blend-mode 0s;
+}
+
+html.is-scrolled .subpage-header,
+html.is-scrolled .artist-hero .top-nav {
+    background: rgba(10, 5, 16, 0.80);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    mix-blend-mode: normal;
+}
+
 html.is-scrolled .subpage-header .top-nav,
 html.is-scrolled .artist-hero .top-nav {
     padding: 10px var(--container-pad);
@@ -905,3 +949,6 @@ html.is-scrolled .nav-center {
     transform: translateY(-12px);
     pointer-events: none;
 }
+
+/* Scroll offset pro kotvy – kompenzuje výšku fixní navigace */
+#eventy, #o-agenture, #kontakt { scroll-margin-top: 80px; }
