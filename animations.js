@@ -1,5 +1,52 @@
 /* Live District — shared animations */
 
+/* ─── ARTIST MARQUEE: pevný první batch + náhodné navazující batche ───
+   Generuje se PŘED kurzorem a crowd-partingem, aby na nově vzniklé dlaždice
+   navázaly stejné interakce. Track = 2 identické poloviny → bezešvý -50% loop. */
+(function () {
+    var track = document.querySelector('.bento-track');
+    var fixed = track && track.querySelector('.bento-fixed');
+    if (!track || !fixed) return;
+
+    var templates = Array.prototype.slice.call(fixed.querySelectorAll('.bento-item'));
+    if (!templates.length) return;
+
+    function shuffle(a) {
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+    }
+
+    // Náhodný batch: 8 sloupců, každý vyplněn na 3 řady náhodným vzorem
+    // čtverců (span 1) a vertikálů (span 2). Plní se po sloupcích → bez děr.
+    var COL_PATTERNS = [[2, 1], [1, 2], [1, 1, 1]];
+    function buildRandomBatch() {
+        var batch = document.createElement('div');
+        batch.className = 'bento-mosaic bento-random';
+        var pool = shuffle(templates.slice());
+        var pi = 0;
+        for (var col = 0; col < 8; col++) {
+            var pat = COL_PATTERNS[Math.floor(Math.random() * COL_PATTERNS.length)];
+            for (var k = 0; k < pat.length; k++) {
+                var item = pool[pi % pool.length].cloneNode(true);
+                pi++;
+                item.style.transform = '';
+                item.style.gridRow = 'span ' + pat[k];
+                batch.appendChild(item);
+            }
+        }
+        return batch;
+    }
+
+    // 1. polovina: [pevný, náhodný, náhodný]
+    var seq = [fixed, buildRandomBatch(), buildRandomBatch()];
+    seq.slice(1).forEach(function (b) { track.appendChild(b); });
+    // 2. identická polovina (klony) → bezešvý loop při translateX(-50%)
+    seq.forEach(function (b) { track.appendChild(b.cloneNode(true)); });
+})();
+
 /* ─── CUSTOM CURSOR ─── */
 (function () {
     if (window.matchMedia('(hover: none)').matches) return;
@@ -23,22 +70,8 @@
         el.addEventListener('mouseleave', function () { cursor.classList.remove('is-hovering'); });
     });
 
-    // Artist card hover — expand bubble with artist name
+    // Artist card hover — static "CLICK" with the default simple text styling
     document.querySelectorAll('.artist-card').forEach(function (el) {
-        el.addEventListener('mouseenter', function () {
-            var nameEl = el.querySelector('.artist-name');
-            label.textContent = nameEl ? nameEl.textContent.trim() : '';
-            cursor.classList.remove('is-hovering');
-            cursor.classList.add('is-artist-hover');
-        });
-        el.addEventListener('mouseleave', function () {
-            cursor.classList.remove('is-artist-hover');
-            label.textContent = '';
-        });
-    });
-
-    // Bento item hover — side-label "CLICK"
-    document.querySelectorAll('.bento-item').forEach(function (el) {
         el.addEventListener('mouseenter', function () {
             label.textContent = 'CLICK';
             cursor.classList.remove('is-hovering');
@@ -47,6 +80,72 @@
         el.addEventListener('mouseleave', function () {
             cursor.classList.remove('is-bento-hover');
             label.textContent = '';
+        });
+    });
+
+    // Bento item hover — dynamic artist name inside the beige pill
+    document.querySelectorAll('.bento-item').forEach(function (el) {
+        el.addEventListener('mouseenter', function () {
+            var img = el.querySelector('img');
+            label.textContent = el.getAttribute('data-cursor-text') || (img && img.alt) || 'CLICK';
+            cursor.classList.remove('is-hovering');
+            cursor.classList.add('is-artist-hover');
+        });
+        el.addEventListener('mouseleave', function () {
+            cursor.classList.remove('is-artist-hover');
+            label.textContent = '';
+        });
+    });
+})();
+
+/* ─── ARTIST GRID "CROWD PARTING" ───
+   Hovered item scales up (CSS :hover); all other items smoothly shift
+   away from it in their relative direction. Pure additive layer —
+   leaves the bento layout, gradient title and cursor logic untouched. */
+(function () {
+    if (window.matchMedia('(hover: none)').matches) return;
+    var batches = document.querySelectorAll('.bento-mosaic');
+    if (!batches.length) return;
+
+    var SHIFT = 12; // px the surrounding items part away (subtle)
+
+    batches.forEach(function (batch) {
+        var items = Array.prototype.slice.call(batch.querySelectorAll('.bento-item'));
+        if (items.length < 2) return;
+
+        // Scroll-independent centres, relative to the batch (position:relative)
+        var centers = [];
+        function measure() {
+            centers = items.map(function (el) {
+                return { cx: el.offsetLeft + el.offsetWidth / 2, cy: el.offsetTop + el.offsetHeight / 2 };
+            });
+        }
+        measure();
+        window.addEventListener('load', measure);
+        window.addEventListener('resize', measure);
+
+        function part(idx) {
+            items[idx].style.transform = '';            // hovered keeps its CSS :hover scale
+            var h = centers[idx];
+            items.forEach(function (el, i) {
+                if (i === idx) return;
+                var dx = centers[i].cx - h.cx;
+                var dy = centers[i].cy - h.cy;
+                var dist = Math.hypot(dx, dy) || 1;
+                var tx = (dx / dist) * SHIFT;
+                var ty = (dy / dist) * SHIFT;
+                el.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)';
+            });
+        }
+        function reset() {
+            items.forEach(function (el) { el.style.transform = ''; });
+        }
+
+        items.forEach(function (el, i) {
+            el.addEventListener('mouseenter', function () { part(i); });
+            el.addEventListener('mouseleave', reset);
+            el.addEventListener('focus', function () { part(i); });
+            el.addEventListener('blur', reset);
         });
     });
 })();

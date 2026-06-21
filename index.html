@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="animations.js" defer></script>
 </head>
-<body>
+<body class="home">
 
     <div class="preloader" id="preloader">
         <div class="preloader-inner">
@@ -16,30 +16,30 @@
         </div>
     </div>
 
+    <header class="subpage-header">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="poptavka.html" class="nav-link">NEVÁZANÁ POPTÁVKA</a>
+                <a href="eventy.html" class="nav-link">EVENTY</a>
+            </div>
+            <div class="nav-center">
+                <a href="index.html"><img src="logo dirtict.svg" alt="Live District Logo" class="logo"></a>
+            </div>
+            <div class="nav-right">
+                <a href="umelci.html" class="nav-link">UMĚLCI</a>
+                <a href="tym.html" class="nav-link">TÝM</a>
+                <a href="#kontakt" class="nav-link">KONTAKT</a>
+            </div>
+        </nav>
+    </header>
+
     <header class="hero-section">
         <div class="hero-bg">
-            <video autoplay loop muted playsinline fetchpriority="high" poster="Lboy OX praha napoleon-headervideo.png">
+            <video autoplay loop muted playsinline poster="Lboy OX praha napoleon-headervideo.png">
                 <source src="headervideo.mp4" type="video/mp4">
             </video>
             <div class="css-overlay-dark"></div>
             <div class="css-overlay-fade"></div>
-        </div>
-
-        <div class="subpage-header">
-            <nav class="top-nav">
-                <div class="nav-left">
-                    <a href="poptavka.html" class="nav-link">NEZÁVAZNÁ POPTÁVKA</a>
-                    <a href="eventy.html" class="nav-link">EVENTY</a>
-                </div>
-                <div class="nav-center">
-                    <a href="index.html"><img src="logo dirtict.svg" alt="Live District Logo" class="logo"></a>
-                </div>
-                <div class="nav-right">
-                    <a href="umelci.html" class="nav-link">UMĚLCI</a>
-                    <a href="tym.html" class="nav-link">TÝM</a>
-                    <a href="#kontakt" class="nav-link">KONTAKT</a>
-                </div>
-            </nav>
         </div>
 
         <div class="hero-content">
@@ -53,7 +53,6 @@
         <div class="artists-glow" aria-hidden="true"></div>
         <div class="artists-content">
             <div class="container">
-                <p class="section-eyebrow reveal">LIVE DISTRICT</p>
                 <h2 class="section-title title-reveal">
                     <span>UMĚLCI</span>
                 </h2>
@@ -63,7 +62,10 @@
                     <div class="carousel-track" id="artists-track">
 
                         <a href="lboy.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="lboyfoto.jpg" alt="LBOY" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/lboyfoto-400.webp 400w, webp/lboyfoto-800.webp 800w, webp/lboyfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="lboyfoto.jpg" alt="LBOY" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">LBOY</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -71,7 +73,10 @@
                         </a>
 
                         <a href="dorian.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="dorianfoto.jpg" alt="DORIAN" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/dorianfoto-400.webp 400w, webp/dorianfoto-800.webp 800w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="dorianfoto.jpg" alt="DORIAN" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">DORIAN</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -79,7 +84,10 @@
                         </a>
 
                         <a href="katannah.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="katannahfoto.jpg" alt="KATANNAH" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/katannahfoto-400.webp 400w, webp/katannahfoto-800.webp 800w, webp/katannahfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="katannahfoto.jpg" alt="KATANNAH" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">KATANNAH</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -87,7 +95,10 @@
                         </a>
 
                         <a href="freez247.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="freez247foto.jpg" alt="FREEZ247" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/freez247foto-400.webp 400w, webp/freez247foto-800.webp 800w, webp/freez247foto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="freez247foto.jpg" alt="FREEZ247" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">FREEZ247</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -95,7 +106,10 @@
                         </a>
 
                         <a href="erne100.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="erne100foto.jpg" alt="ERNE100" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/erne100foto-400.webp 400w, webp/erne100foto-800.webp 800w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="erne100foto.jpg" alt="ERNE100" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">ERNE100</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -103,7 +117,10 @@
                         </a>
 
                         <a href="meizimen.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="meizimenfoto.jpg" alt="MEIZIMEN" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/meizimenfoto-400.webp 400w, webp/meizimenfoto-800.webp 800w, webp/meizimenfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="meizimenfoto.jpg" alt="MEIZIMEN" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">MEIZIMEN</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -111,7 +128,10 @@
                         </a>
 
                         <a href="mckenny.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="mckennyfoto.jpg" alt="MC KENNY" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/mckennyfoto-400.webp 400w, webp/mckennyfoto-800.webp 800w, webp/mckennyfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="mckennyfoto.jpg" alt="MC KENNY" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">MC KENNY</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -119,7 +139,10 @@
                         </a>
 
                         <a href="sensey.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="senseyfoto.jpg" alt="SENSEY" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/senseyfoto-400.webp 400w, webp/senseyfoto-800.webp 800w, webp/senseyfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="senseyfoto.jpg" alt="SENSEY" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">SENSEY</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -127,7 +150,10 @@
                         </a>
 
                         <a href="erickmati.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="erickmatifoto.jpg" alt="ERICK MATI" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/erickmatifoto-400.webp 400w, webp/erickmatifoto-800.webp 800w, webp/erickmatifoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="erickmatifoto.jpg" alt="ERICK MATI" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">ERICK MATI</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -135,7 +161,10 @@
                         </a>
 
                         <a href="case26.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="case26foto.jpg" alt="CASE26" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/case26foto-400.webp 400w, webp/case26foto-800.webp 800w, webp/case26foto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="case26foto.jpg" alt="CASE26" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">CASE26</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -143,7 +172,10 @@
                         </a>
 
                         <a href="radekyang.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="radekyangfoto.jpg" alt="RADEK YANG" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/radekyangfoto-400.webp 400w, webp/radekyangfoto-800.webp 800w, webp/radekyangfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="radekyangfoto.jpg" alt="RADEK YANG" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">RADEK YANG</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -151,7 +183,10 @@
                         </a>
 
                         <a href="nando.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="nandofoto.jpg" alt="NANDO" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/nandofoto-400.webp 400w, webp/nandofoto-800.webp 800w, webp/nandofoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="nandofoto.jpg" alt="NANDO" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">NANDO</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -159,7 +194,10 @@
                         </a>
 
                         <a href="vladkysyn.html" class="artist-card">
-                            <div class="artist-photo-wrap"><img src="vladkysynfoto.jpg" alt="VLAĎKYSYN" class="artist-photo" loading="lazy" decoding="async"></div>
+                            <div class="artist-photo-wrap"><picture>
+          <source srcset="webp/vladkysynhero-800.webp 800w, webp/vladkysynhero-1200.webp 1200w, webp/vladkysynhero-1920.webp 1920w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 33vw" type="image/webp">
+          <img src="vladkysynhero.jpg" alt="VLAĎKYSYN" class="artist-photo" loading="lazy" decoding="async">
+        </picture></div>
                             <div class="artist-info">
                                 <span class="artist-name">VLAĎKYSYN</span>
                                 <img src="arrow.svg" alt="" class="artist-arrow">
@@ -174,7 +212,6 @@
 
     <section class="events-section" id="eventy">
         <div class="container">
-            <p class="section-eyebrow reveal">— BLÍŽÍCÍ SE</p>
             <h2 class="section-title title-reveal"><span>EVENTY</span></h2>
             <div class="events-table">
                 <div class="events-header">
@@ -183,7 +220,7 @@
                     <div class="col-club">CLUB</div>
                     <div class="col-umelec">UMĚLEC</div>
                 </div>
-                <div class="events-row highlight-row">
+                <div class="events-row">
                     <div class="col-kdy">21. 6.</div><div class="col-lokace">PRAHA</div><div class="col-club">OX CLUB PRAGUE</div><div class="col-umelec">VLADKYSYN</div>
                 </div>
                 <div class="events-row">
@@ -205,12 +242,11 @@
         </div>
     </section>
 
-    <section class="about-section" id="o-agenture">
+    <section class="about-section">
         <div class="container">
             <div class="about-grid reveal">
                 <div class="about-text">
-                    <h2 class="about-heading title-reveal"><span>O AGENTUŘE<br>LIVE DISTRICT</span></h2>
-                    <div class="about-accent-line"></div>
+<h2 class="about-heading title-reveal"><span>O AGENTUŘE<br>LIVE DISTRICT</span></h2>
                     <p>Live District je bookingová agentura zaměřená na profesionální zastoupení současných umělců. Zajišťujeme booking, komunikaci a kompletní podporu vystoupení – od klubových akcí až po festivaly a speciální eventy.</p>
                     <p>Spolupracujeme s interprety i pořadateli a klademe důraz na kvalitu, spolehlivost a dlouhodobé vztahy.</p>
                 </div>
@@ -231,48 +267,67 @@
             </div>
         </div>
 
-        <div class="artist-marquee-wrapper">
-            <div class="artist-marquee-track">
-
-                <!-- Original block -->
-                <div class="bento-mosaic">
-                    <a href="lboy.html"      class="bento-item item-huge"><img src="lboyfoto.jpg"      alt="LBOY" loading="lazy" decoding="async"></a>
-                    <a href="dorian.html"    class="bento-item item-tall"><img src="dorianfoto.jpg"    alt="DORIAN" loading="lazy" decoding="async"></a>
-                    <a href="katannah.html"  class="bento-item">          <img src="katannahfoto.jpg"  alt="KATANNAH" loading="lazy" decoding="async"></a>
-                    <a href="freez247.html"  class="bento-item">          <img src="freez247foto.jpg"  alt="FREEZ247" loading="lazy" decoding="async"></a>
-                    <a href="erne100.html"   class="bento-item item-tall"><img src="erne100foto.jpg"   alt="ERNE100" loading="lazy" decoding="async"></a>
-                    <a href="meizimen.html"  class="bento-item">          <img src="meizimenfoto.jpg"  alt="MEIZIMEN" loading="lazy" decoding="async"></a>
-                    <a href="mckenny.html"   class="bento-item">          <img src="mckennyfoto.jpg"   alt="MC KENNY" loading="lazy" decoding="async"></a>
-                    <a href="sensey.html"    class="bento-item item-tall"><img src="senseyfoto.jpg"    alt="SENSEY" loading="lazy" decoding="async"></a>
-                    <a href="erickmati.html" class="bento-item">          <img src="erickmatifoto.jpg" alt="ERICK MATI" loading="lazy" decoding="async"></a>
-                    <a href="case26.html"    class="bento-item">          <img src="case26foto.jpg"    alt="CASE26" loading="lazy" decoding="async"></a>
-                    <a href="radekyang.html" class="bento-item item-huge"><img src="radekyangfoto.jpg" alt="RADEK YANG" loading="lazy" decoding="async"></a>
-                    <a href="nando.html"     class="bento-item">          <img src="nandofoto.jpg"     alt="NANDO" loading="lazy" decoding="async"></a>
-                    <a href="vladkysyn.html" class="bento-item">          <img src="vladkysynfoto.jpg" alt="VLAĎKYSYN" loading="lazy" decoding="async"></a>
+        <div class="bento-fade">
+            <div class="bento-track">
+                <div class="bento-mosaic bento-fixed">
+                <a href="lboy.html"      class="bento-item"><picture>
+          <source srcset="webp/lboyfoto-400.webp 400w, webp/lboyfoto-800.webp 800w, webp/lboyfoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 22vw" type="image/webp">
+          <img src="lboyfoto.jpg"      alt="LBOY" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="dorian.html"    class="bento-item"><picture>
+          <source srcset="webp/dorianfoto-400.webp 400w, webp/dorianfoto-800.webp 800w" sizes="(max-width:768px) 50vw, 22vw" type="image/webp">
+          <img src="dorianfoto.jpg"    alt="DORIAN" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="katannah.html"  class="bento-item"><picture>
+          <source srcset="webp/katannahfoto-400.webp 400w, webp/katannahfoto-800.webp 800w, webp/katannahfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, 38vw" type="image/webp">
+          <img src="katannahfoto.jpg"  alt="KATANNAH" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="freez247.html"  class="bento-item"><picture>
+          <source srcset="webp/freez247foto-400.webp 400w, webp/freez247foto-800.webp 800w, webp/freez247foto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 22vw" type="image/webp">
+          <img src="freez247foto.jpg"  alt="FREEZ247" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="erne100.html"   class="bento-item"><picture>
+          <source srcset="webp/erne100foto-400.webp 400w, webp/erne100foto-800.webp 800w" sizes="(max-width:768px) 50vw, 22vw" type="image/webp">
+          <img src="erne100foto.jpg"   alt="ERNE100" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="meizimen.html"  class="bento-item"><picture>
+          <source srcset="webp/meizimenfoto-400.webp 400w, webp/meizimenfoto-800.webp 800w, webp/meizimenfoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 16vw" type="image/webp">
+          <img src="meizimenfoto.jpg"  alt="MEIZIMEN" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="mckenny.html"   class="bento-item"><picture>
+          <source srcset="webp/mckennyfoto-400.webp 400w, webp/mckennyfoto-800.webp 800w, webp/mckennyfoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 16vw" type="image/webp">
+          <img src="mckennyfoto.jpg"   alt="MC KENNY" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="sensey.html"    class="bento-item"><picture>
+          <source srcset="webp/senseyfoto-400.webp 400w, webp/senseyfoto-800.webp 800w, webp/senseyfoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 16vw" type="image/webp">
+          <img src="senseyfoto.jpg"    alt="SENSEY" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="erickmati.html" class="bento-item"><picture>
+          <source srcset="webp/erickmatifoto-400.webp 400w, webp/erickmatifoto-800.webp 800w, webp/erickmatifoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 16vw" type="image/webp">
+          <img src="erickmatifoto.jpg" alt="ERICK MATI" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="case26.html"    class="bento-item"><picture>
+          <source srcset="webp/case26foto-400.webp 400w, webp/case26foto-800.webp 800w, webp/case26foto-1200.webp 1200w" sizes="(max-width:768px) 100vw, 33vw" type="image/webp">
+          <img src="case26foto.jpg"    alt="CASE26" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="radekyang.html" class="bento-item"><picture>
+          <source srcset="webp/radekyangfoto-400.webp 400w, webp/radekyangfoto-800.webp 800w, webp/radekyangfoto-1200.webp 1200w" sizes="(max-width:768px) 100vw, 33vw" type="image/webp">
+          <img src="radekyangfoto.jpg" alt="RADEK YANG" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="nando.html"     class="bento-item"><picture>
+          <source srcset="webp/nandofoto-400.webp 400w, webp/nandofoto-800.webp 800w, webp/nandofoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 16vw" type="image/webp">
+          <img src="nandofoto.jpg"     alt="NANDO" loading="lazy" decoding="async">
+        </picture></a>
+                <a href="vladkysyn.html" class="bento-item"><picture>
+          <source srcset="webp/vladkysynfoto-400.webp 400w, webp/vladkysynfoto-800.webp 800w, webp/vladkysynfoto-1200.webp 1200w" sizes="(max-width:768px) 50vw, 16vw" type="image/webp">
+          <img src="vladkysynfoto.jpg" alt="VLAĎKYSYN" loading="lazy" decoding="async">
+        </picture></a>
                 </div>
-
-                <!-- Duplicate for seamless loop -->
-                <div class="bento-mosaic" aria-hidden="true">
-                    <a href="lboy.html"      class="bento-item item-huge"><img src="lboyfoto.jpg"      alt="" loading="lazy" decoding="async"></a>
-                    <a href="dorian.html"    class="bento-item item-tall"><img src="dorianfoto.jpg"    alt="" loading="lazy" decoding="async"></a>
-                    <a href="katannah.html"  class="bento-item">          <img src="katannahfoto.jpg"  alt="" loading="lazy" decoding="async"></a>
-                    <a href="freez247.html"  class="bento-item">          <img src="freez247foto.jpg"  alt="" loading="lazy" decoding="async"></a>
-                    <a href="erne100.html"   class="bento-item item-tall"><img src="erne100foto.jpg"   alt="" loading="lazy" decoding="async"></a>
-                    <a href="meizimen.html"  class="bento-item">          <img src="meizimenfoto.jpg"  alt="" loading="lazy" decoding="async"></a>
-                    <a href="mckenny.html"   class="bento-item">          <img src="mckennyfoto.jpg"   alt="" loading="lazy" decoding="async"></a>
-                    <a href="sensey.html"    class="bento-item item-tall"><img src="senseyfoto.jpg"    alt="" loading="lazy" decoding="async"></a>
-                    <a href="erickmati.html" class="bento-item">          <img src="erickmatifoto.jpg" alt="" loading="lazy" decoding="async"></a>
-                    <a href="case26.html"    class="bento-item">          <img src="case26foto.jpg"    alt="" loading="lazy" decoding="async"></a>
-                    <a href="radekyang.html" class="bento-item item-huge"><img src="radekyangfoto.jpg" alt="" loading="lazy" decoding="async"></a>
-                    <a href="nando.html"     class="bento-item">          <img src="nandofoto.jpg"     alt="" loading="lazy" decoding="async"></a>
-                    <a href="vladkysyn.html" class="bento-item">          <img src="vladkysynfoto.jpg" alt="" loading="lazy" decoding="async"></a>
-                </div>
-
             </div>
         </div>
     </section>
 
-            <footer class="site-footer" id="kontakt">
+        <footer class="site-footer" id="kontakt">
         <div class="footer-top">
             <a href="index.html" class="footer-logo">
                 <img src="logo dirtict.svg" alt="Live District">
@@ -296,7 +351,7 @@
                 <span class="separator">&#8226;</span>
                 <span>IČO: 01744933</span>
                 <span class="separator">&#8226;</span>
-                <a href="#">Ochrana osobních údajů</a>
+                <a href="ochrana-osobnich-udaju.html">Ochrana osobních údajů</a>
             </div>
         </div>
     </footer>
@@ -353,7 +408,8 @@
             const perView = () => window.innerWidth <= 768 ? 1 : (window.innerWidth <= 1100 ? 2 : 3);
 
             function sizeCards() {
-                const gap = parseInt(getComputedStyle(root).getPropertyValue('--card-gap')) || 96;
+                // čteme rozpuštěnou mezeru v px z tracku (--card-gap je v rem)
+                const gap = parseFloat(getComputedStyle(track).columnGap) || 96;
                 const n = perView();
                 const w = (wrapper.clientWidth - gap * (n - 1)) / n;
                 root.style.setProperty('--card-w', w + 'px');
@@ -414,8 +470,32 @@
         });
     </script>
 
+    <script>
+        /* ---- Hero video: cropni závěrečné titulky (loop jen do „konec − TRIM_END") ---- */
+        (function () {
+            var v = document.querySelector('.hero-bg video');
+            if (!v) return;
+            var TRIM_END = 4;            // kolik sekund závěrečných titulků na konci uříznout
+            v.removeAttribute('loop');   // loop řešíme v JS, ať se titulky vůbec nepřehrají
+            function loopEnd() {
+                var d = v.duration;
+                return (isFinite(d) && d > TRIM_END) ? d - TRIM_END : Infinity;
+            }
+            function rewind() {
+                v.currentTime = 0;
+                var p = v.play();
+                if (p && p.catch) p.catch(function () {});
+            }
+            v.addEventListener('timeupdate', function () {
+                if (v.currentTime >= loopEnd()) rewind();
+            });
+            v.addEventListener('ended', rewind);   // pojistka
+        })();
+    </script>
+
 </body>
 </html>
+
 
 
 

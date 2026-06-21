@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(ls headervideo.mp4)",
+      "Bash(ls videos/)",
+      "Bash(npm --version)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(npm install *)",
+      "Bash(node optimize-images.js)",
+      "Bash(node update-html-images.js)"
+    ]
+  }
+}

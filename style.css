@@ -2,48 +2,52 @@
 @font-face { font-family:'HelveticaExtended'; src:url('HelveticaNeueLTProBdEx.otf'); font-weight:normal; font-style:normal; }
 @font-face { font-family:'HelveticaLight';    src:url('HelveticaNeueLTProLt.otf');   font-weight:normal; font-style:normal; }
 @font-face { font-family:'HelveticaBold';     src:url('HelveticaNeueLTProBd.otf');   font-weight:normal; font-style:normal; }
+@font-face { font-family:'HelveticaExtended53'; src:url('HelveticaNeueLTProEx.otf'); font-weight:normal; font-style:normal; }
 
 /* =========================================================
    PROMĚNNÉ (Custom Properties)
 ========================================================= */
 :root {
     /* — Layout — */
-    --content-max:     1364px;
-    --container-pad:   60px;
-    --card-gap:        96px;
-    --space-section:   150px;
-    --space-title:     70px;
-    --radius:          4px;
+    --content-max:     85.25rem;
+    --container-pad:   3.75rem;
+    --card-gap:        6rem;
+    --space-section:   9.375rem;
+    --space-title:     4.375rem;
+    --radius:          0.25rem;
 
-    /* — Accent palette — */
-    --violet-1: 188,179,255;
-    --violet-2: 113,107,153;
+    /* — Accent palette (minimalistická černá / grafit) — */
+    --violet-1: 20,20,20;
+    --violet-2: 90,90,90;
     /* Hlavní akcentní barva (použij jako rgba(var(--accent),opacity)) */
-    --accent: 188,179,255;
+    --accent: 20,20,20;
+    /* Hlavní text (skoro černá) */
+    --ink: #111114;
 
-    /* — Background tones — */
-    --bg-dark:      #0a0510;
-    --bg-darker:    #050508;
-    --bg-card:      #0e0814;
-    --bg-hero-mid:  #15101f;
-    --bg-hero-end:  #1a1426;
+    /* — Background tones (light mode) — */
+    --bg-dark:      #ffffff;   /* hlavní pozadí stránky */
+    --bg-darker:    #ececed;   /* interaktivní „darken" plochy (hover polí/tlačítek) */
+    --bg-card:      #f4f4f5;   /* karty, panely, řádky na hover */
+    --bg-hero-mid:  #fafafb;
+    --bg-hero-end:  #f4f4f5;
 
-    /* — Borders — */
-    --border-subtle: rgba(255,255,255,0.06);
-    --border-mid:    rgba(255,255,255,0.10);
-    --border-hover:  rgba(255,255,255,0.22);
+    /* — Borders (tmavé na světlém) — */
+    --border-subtle: rgba(0,0,0,0.08);
+    --border-mid:    rgba(0,0,0,0.12);
+    --border-hover:  rgba(0,0,0,0.28);
 
-    /* — Text alpha levels — */
-    --text-dim-1: rgba(255,255,255,0.42);
-    --text-dim-2: rgba(255,255,255,0.45);
-    --text-dim-3: rgba(255,255,255,0.55);
-    --text-dim-4: rgba(255,255,255,0.64);
-    --text-dim-5: rgba(255,255,255,0.72);
+    /* — Text alpha levels (černá na světlém) — */
+    --text-dim-1: rgba(0,0,0,0.45);
+    --text-dim-2: rgba(0,0,0,0.50);
+    --text-dim-3: rgba(0,0,0,0.58);
+    --text-dim-4: rgba(0,0,0,0.66);
+    --text-dim-5: rgba(0,0,0,0.78);
 
     /* — Font families — */
-    --font-extended: 'HelveticaExtended', sans-serif;
-    --font-light:    'HelveticaLight', sans-serif;
-    --font-bold:     'HelveticaBold', sans-serif;
+    --font-extended:    'HelveticaExtended', sans-serif;
+    --font-extended-53: 'HelveticaExtended53', sans-serif;
+    --font-light:       'HelveticaLight', sans-serif;
+    --font-bold:        'HelveticaBold', sans-serif;
 
     /* — Premium easing curves — */
     --ease-spring:    cubic-bezier(0.16, 1, 0.3, 1);
@@ -55,12 +59,15 @@
     --t-fast: 0.45s;
     --t-med:  0.6s;
     --t-slow: 0.9s;
+
+    /* — Stacked-scroll stín (náběžná hrana sekcí najíždějících přes připnuté) — */
+    --stack-shadow: 0 -0.5rem 1.5rem rgba(0,0,0,0.10);
 }
 
 /* ---------- RESET ---------- */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; cursor:none; }
 
-html { scroll-behavior:smooth; overflow-x:hidden; }
+html { scroll-behavior:smooth; overflow-x:clip; }
 
 /* ─── LENIS ─── */
 html.lenis, html.lenis body { height:auto; }
@@ -71,15 +78,54 @@ html.lenis, html.lenis body { height:auto; }
 
 body {
     background-color: var(--bg-dark);
-    color:#fff;
+    color: var(--ink);
     font-family: var(--font-light);
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
-    overflow-x:hidden;
+    overflow-x:clip;
 }
 
 img { display:block; max-width:100%; }
 a { color:inherit; }
+
+/* ─── STACKED SCROLLING (homepage) ───
+   Hero scrolluje normálně. Pak dvě připnuté scény, na které postupně najedou
+   překrývající sekce (stejný princip jako na stránce umělce — sticky vrstva +
+   překrývající sekce s vyšším z-indexem a plným pozadím):
+     1) UMĚLCI se připnou (z1) → EVENTY (z2) na ně najedou.
+     2) O AGENTUŘE se připne (z3) → NAŠI UMĚLCI + FOOTER (z4) na ni najedou.
+   Mezi tím se scrolluje normálně. Připnuté scény jsou 100vh, aby plně překryly to pod sebou.
+   Navigace je fixed (z-index 1000), takže zůstává vždy nahoře. */
+.home .events-section {
+    position: relative;
+    z-index: 2;
+}
+.home .about-section {
+    position: sticky; top: 0; z-index: 3;
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    /* menší padding než ostatní sekce, aby se připnutá scéna vešla do 100vh */
+    padding-top: clamp(1.5rem, 4vh, 3rem);
+    padding-bottom: clamp(1.5rem, 4vh, 3rem);
+}
+/* video o agentuře je 4/5 (vysoké) – při připnutí mu omezíme výšku, ať se scéna
+   vejde do 100vh; object-fit:cover se postará o správný ořez beze zkreslení */
+.home .about-section .about-visual {
+    max-height: 64vh;
+    align-self: center;
+}
+.home .preview-section,
+.home .site-footer {
+    position: relative;
+    z-index: 4;
+}
+
+/* Lehký stín pod náběžnou hranou sekcí, co najíždějí přes připnuté (stacked scroll) */
+.home .artists-section,   /* najíždí přes hero */
+.home .events-section,    /* najíždí přes UMĚLCE */
+.home .preview-section {  /* najíždí přes O AGENTUŘE */
+    box-shadow: var(--stack-shadow);
+}
 
 /* ---------- SDÍLENÝ KONTEJNER ---------- */
 .container {
@@ -93,7 +139,7 @@ a { color:inherit; }
 /* ---------- NADPIS SEKCE ---------- */
 .section-title {
     font-family: var(--font-extended);
-    font-size: clamp(28px, 3.5vw, 46px);
+    font-size: clamp(1.75rem, 3.5vw, 2.875rem);
     line-height:1.05;
     letter-spacing:-0.02em;
     margin-bottom:var(--space-title);
@@ -101,7 +147,7 @@ a { color:inherit; }
 
 /* ---------- SCROLL-REVEAL ---------- */
 .js .reveal {
-    opacity:0; transform:translateY(36px);
+    opacity:0; transform:translateY(2.25rem);
     transition:opacity var(--t-slow) ease, transform var(--t-slow) var(--ease-spring);
 }
 .js .reveal.in { opacity:1; transform:none; }
@@ -112,17 +158,21 @@ a { color:inherit; }
 /* =========================================================
    HERO + VIDEO
 ========================================================= */
-.hero-section { position:relative; width:100%; height:100vh; min-height:760px; max-height:1012px; }
+.hero-section {
+    /* Hero scrolluje úplně normálně; připíná se až sekce s umělci pod ním. */
+    position:relative; z-index:0;
+    width:100%; height:100vh; min-height:47.5rem;
+}
 .hero-bg { position:absolute; inset:0; z-index:1; pointer-events:none; }
 .hero-bg video { width:100vw; height:100%; object-fit:cover; }
-.css-overlay-dark { position:absolute; inset:0; background:rgba(0,0,0,0.55); z-index:2; }
+.css-overlay-dark { position:absolute; inset:0; background:rgba(0,0,0,0.32); z-index:2; }
 .css-overlay-fade {
-    position:absolute; bottom:0; left:0; width:100%; height:520px;
-    background:linear-gradient(to bottom, rgba(10,5,16,0) 0%, rgba(10,5,16,0.85) 70%, rgba(10,5,16,1) 100%);
+    display:none;   /* hero fade odebrán – flat design */
+    position:absolute; bottom:0; left:0; width:100%; height:20rem;
     z-index:3;
 }
 
-.hero-content { position:relative; z-index:4; max-width:1440px; margin:0 auto; height:100%; }
+.hero-content { position:relative; z-index:4; max-width:90rem; margin:0 auto; height:100%; }
 
 /* ---------- NAVIGACE ---------- */
 .top-nav {
@@ -130,38 +180,40 @@ a { color:inherit; }
     width:100%;
     max-width:calc(var(--content-max) + var(--container-pad) * 2);
     margin-left:auto; margin-right:auto;
-    padding: 24px var(--container-pad);
+    padding: 1.5rem var(--container-pad);
     transition: padding 0.5s var(--ease-spring);
 }
-.nav-left, .nav-right { display:flex; align-items:center; gap:100px; flex:1; }
+.nav-left, .nav-right { display:flex; align-items:center; gap:6.25rem; flex:1; }
 .nav-right { justify-content:flex-end; }
 .nav-center {
     display:flex; justify-content:center; flex:0 0 auto;
     min-width:0; overflow:hidden;
-    max-width:240px; opacity:1; transform:translateY(0);
+    max-width:15rem; opacity:1; transform:translateY(0);
     transition: max-width 0.5s var(--ease-spring),
                 opacity 0.45s var(--ease-spring),
                 transform 0.5s var(--ease-spring);
 }
-.logo { width:210px; height:auto; }
+.logo { width:13.125rem; height:auto; }
 
 /* Restore interactivity for all links inside the pointer-events:none nav containers */
 .top-nav a { pointer-events: auto; }
 
 .nav-link {
     font-family: var(--font-extended);
-    font-size:17px; letter-spacing:0.1em; color:#fff; text-decoration:none;
-    position:relative; padding-bottom:4px;
+    font-size:1.0625rem; letter-spacing:0.1em; color:#fff; text-decoration:none;
+    position:relative; padding-bottom:0.25rem;
+    transition: transform 0.4s var(--ease-spring), color 0.45s var(--ease-out);
 }
 .nav-link::after {
-    content:''; position:absolute; bottom:-4px; left:50%;
+    content:''; position:absolute; bottom:-0.25rem; left:50%;
     transform:translateX(-50%);
-    height:1px; width:0%; opacity:0;
-    background:linear-gradient(90deg, transparent 0%, rgba(var(--accent),0.9) 50%, transparent 100%);
-    box-shadow:0px 1px 5px rgba(var(--accent),0.45);
+    height:0.0625rem; width:0%; opacity:0;
+    background: rgba(255,255,255,0.9);
+    box-shadow:none;
     transition:width 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
 }
 .nav-link:hover::after { width:100%; opacity:1; }
+.nav-link:hover { transform: translateY(-0.125rem); }
 
 .hero-title-container { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:80%; text-align:center; }
 .hero-title { max-width:100%; height:auto; margin:0 auto; }
@@ -170,41 +222,76 @@ a { color:inherit; }
    SEKCE UMĚLCI (carousel)
 ========================================================= */
 .artists-section {
-    position:relative; width:100%;
-    padding-top: clamp(80px, 10vh, 150px);
-    padding-bottom: clamp(70px, 9vh, 130px);
-    background:linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-hero-mid) 28%, var(--bg-hero-end) 100%);
+    /* Připnutá scéna: po dojetí k umělcům se sekce připne pod header a zůstane
+       stát, zatímco eventy + o agentuře na ni neprůhledně najedou (jako .artist-bio). */
+    /* --umelci-tuck = o kolik sekce vyscrolluje nahoru (nadpis UMĚLCI zajede pod
+       nav bar), než se připne. Pak na připnutý karusel najedou eventy.
+       Extra výška (100vh + tuck) dává prostor, aby se nadpis stihl schovat
+       DŘÍV, než eventy začnou překrývat. */
+    --umelci-tuck: clamp(6rem, 10vh, 8rem);
+    position:sticky; top:calc(-1 * var(--umelci-tuck)); z-index:1;
+    width:100%;
+    min-height:calc(100vh + var(--umelci-tuck));
+    display:flex; flex-direction:column; justify-content:flex-start;
+    padding-top: clamp(3.5rem, 7vh, 5rem);
+    padding-bottom: clamp(1.5rem, 4vh, 2.5rem);
+    background: var(--bg-dark);
     overflow:hidden;
 }
 .artists-glow {
+    display:none;   /* glow odebrán – flat design */
     position:absolute; top:16%; left:50%; transform:translateX(-50%);
-    width:1100px; height:620px; z-index:0; pointer-events:none;
+    width:68.75rem; height:38.75rem; z-index:0; pointer-events:none;
     background:radial-gradient(ellipse at center,
-        rgba(var(--violet-1),0.20) 0%, rgba(var(--violet-2),0.12) 42%, rgba(0,0,0,0) 70%);
-    filter:blur(50px);
+        rgba(var(--violet-2),0.06) 0%, rgba(var(--violet-2),0.03) 42%, rgba(0,0,0,0) 70%);
+    filter:blur(3.125rem);
 }
 .artists-content { position:relative; z-index:1; }
 
 .carousel-wrapper {
-    overflow:hidden; padding:26px 0 40px;
-    -webkit-mask-image:linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-    mask-image:linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    overflow:hidden; padding:1.625rem 0 2.5rem;
 }
 .carousel-track { display:flex; gap:var(--card-gap); will-change:transform; }
 
 .artist-card {
     flex:0 0 auto;
-    width:var(--card-w, 391px);
+    width:var(--card-w, 24.4375rem);
     text-decoration:none;
     display:flex; flex-direction:column;
-    padding:16px;
-    position:relative; overflow:hidden;
+    padding:1rem;
+    position:relative;
     background: var(--bg-card);
-    border:1px solid var(--border-subtle);
-    border-radius:4px; cursor:none;
+    border:0.0625rem solid var(--border-subtle);
+    border-radius:0.25rem; cursor:none;
     transition:border-color var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out), filter var(--t-med) var(--ease-out);
 }
 .artist-card:hover { border-color: var(--border-hover); }
+.artist-card::before {
+    display:none;   /* gradientový glow okraj odebrán dle požadavku */
+    content:''; position:absolute; inset:-0.0625rem;
+    border-radius:0.3125rem; padding:0.0625rem;
+    background:conic-gradient(
+        from var(--border-angle),
+        transparent 0%,
+        transparent 72%,
+        rgba(var(--accent),0.5) 82%,
+        rgba(var(--accent),0.9) 88%,
+        rgba(var(--accent),0.5) 94%,
+        transparent 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    filter: drop-shadow(0 0 0.25rem rgba(var(--accent),0.45));
+    opacity:0;
+    transition: opacity 0.4s var(--ease-out);
+    pointer-events:none;
+}
+.artist-card:hover::before {
+    opacity:1;
+    animation: borderSpin 2.2s linear infinite;
+}
 .artist-photo-wrap { width:100%; overflow:hidden; aspect-ratio:334/393; }
 .artist-photo {
     width:100%; height:100%; object-fit:cover; object-position:center top; display:block;
@@ -214,26 +301,26 @@ a { color:inherit; }
 .artist-card:hover .artist-photo { transform:scale(1.05); }
 .artist-info {
     display:flex; justify-content:space-between; align-items:center;
-    margin-top:16px;
+    margin-top:1rem;
 }
 .artist-name {
     font-family: var(--font-light);
-    font-size: clamp(22px, 2.8vw, 36px);
+    font-size: clamp(1.375rem, 2.8vw, 2.25rem);
     letter-spacing:-0.01em;
     text-transform:uppercase;
 }
-.artist-arrow { width:26px; height:26px; transition:transform 0.4s var(--ease-spring); flex-shrink:0; }
-.artist-card:hover .artist-arrow { transform:translate(3px,-3px); }
+.artist-arrow { width:1.625rem; height:1.625rem; filter:brightness(0); transition:transform 0.4s var(--ease-spring); flex-shrink:0; }
+.artist-card:hover .artist-arrow { transform:translate(0.1875rem,-0.1875rem); }
 
 .section-eyebrow {
     font-family: var(--font-bold);
-    font-size:11px; letter-spacing:0.25em; text-transform:uppercase;
+    font-size:0.6875rem; letter-spacing:0.25em; text-transform:uppercase;
     color: var(--text-dim-1);
-    margin-bottom:20px;
+    margin-bottom:1.25rem;
 }
 
-.artists-section .section-title { margin-bottom:44px; }
-.title-reveal { overflow:hidden; padding-bottom:6px; }
+.artists-section .section-title { margin-bottom:2.75rem; }
+.title-reveal { overflow:hidden; padding-bottom:0.375rem; }
 .title-reveal > span {
     display:block;
     transform:translateY(110%);
@@ -247,81 +334,88 @@ a { color:inherit; }
 .events-section {
     position:relative; width:100%;
     padding-top:var(--space-section); padding-bottom:var(--space-section);
-    background:linear-gradient(180deg, var(--bg-hero-end) 0%, #120d1c 60%, var(--bg-dark) 100%);
+    background: var(--bg-dark);
 }
 .events-table { width:100%; display:flex; flex-direction:column; gap:0; }
 
 .events-header, .events-row {
     display:grid; grid-template-columns:1.5fr 2fr 3fr 2fr;
     align-items:center;
-    padding-left:12px; padding-right:12px;
+    padding-left:0.75rem; padding-right:0.75rem;
 }
 .events-header {
-    font-family: var(--font-bold); font-size:12px; letter-spacing:0.15em;
-    text-transform:uppercase; color:#888;
-    padding-bottom:20px;
-    border-bottom:1px solid var(--border-mid);
+    font-family: var(--font-bold); font-size:0.75rem; letter-spacing:0.15em;
+    text-transform:uppercase; color: var(--text-dim-3);
+    padding-bottom:1.25rem;
+    border-bottom:0.0625rem solid var(--border-mid);
 }
 .col-umelec { text-align:right; }
 
 .events-row {
     font-family: var(--font-light);
-    font-size: clamp(18px, 2.8vw, 36px);
+    font-size: clamp(1.125rem, 2.8vw, 2.25rem);
     line-height:1;
-    height:61px; cursor:none;
+    height:3.8125rem; cursor:none;
     position:relative; background:none;
-    border-radius:6px;
+    border-radius:0.375rem;
     transition:transform 0.5s var(--ease-spring), background-color 0.4s var(--ease-spring);
-    border-bottom:1px solid rgba(255,255,255,0.05);
+    border-bottom:0.0625rem solid rgba(0,0,0,0.07);
 }
 .events-row:hover { background-color: var(--bg-card); }
-.events-row .col-kdy    { color:#fff; }
-.events-row .col-lokace { color: var(--text-dim-4); transition:color 0.4s var(--ease-spring); }
-.events-row .col-club   { color:#fff; }
-.events-row .col-umelec { color:#fff; font-family: var(--font-bold); }
-.events-row:hover .col-lokace { color:#fff; }
-.highlight-row { background-color: rgba(var(--accent),0.07); }
-.highlight-row .col-kdy { color:rgba(var(--accent),0.9); }
+.events-row::after {
+    content:''; position:absolute; bottom:0; left:0; right:0;
+    height:0.0625rem;
+    background: rgba(var(--accent),0.85);
+    box-shadow:none;
+    transform:scaleX(0);
+    transform-origin:right center;
+    transition:transform 0.5s var(--ease-out);
+}
+.events-row:hover::after { transform:scaleX(1); }
+.events-row .col-kdy    { color: var(--ink); font-family: var(--font-light); }
+.events-row .col-lokace { color: var(--text-dim-4); font-family: var(--font-light); transition:color 0.4s var(--ease-spring); }
+.events-row .col-club   { color: var(--ink); font-family: var(--font-light); }
+.events-row .col-umelec { color: var(--ink); font-family: var(--font-extended-53); }
+.events-row:hover .col-lokace { color: var(--ink); }
 
 /* Stránka EVENTY */
 .events-page-section {
-    width:100%; padding:clamp(60px,8vh,100px) 0 clamp(80px,12vh,140px) 0;
+    width:100%; padding:clamp(3.75rem,8vh,6.25rem) 0 clamp(5rem,12vh,8.75rem) 0;
 }
 .events-page-title {
     font-family: var(--font-extended);
-    font-size: clamp(28px, 3.5vw, 46px);
+    font-size: clamp(1.75rem, 3.5vw, 2.875rem);
     letter-spacing:-0.02em;
     text-align:center; text-transform:uppercase;
-    margin:40px 0 clamp(40px,6vh,80px) 0; font-weight:normal;
+    margin:2.5rem 0 clamp(2.5rem,6vh,5rem) 0; font-weight:normal;
 }
 
 /* =========================================================
    SEKCE O AGENTUŘE
 ========================================================= */
 .about-section { position:relative; width:100%; padding:var(--space-section) 0; background: var(--bg-dark); }
-.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
 
-.about-text { position:relative; }
-.about-heading {
+.about-text { position:relative; }.about-heading {
     font-family: var(--font-extended);
-    font-size: clamp(28px, 3.5vw, 46px);
+    font-size: clamp(1.75rem, 3.5vw, 2.875rem);
     line-height:1.08;
     letter-spacing:-0.02em;
-    margin-bottom:0; position:relative; z-index:1;
+    margin-bottom:4.25rem; position:relative; z-index:1;
 }
 .about-accent-line {
-    height:2px; width:0%; max-width:120px; margin:22px 0 44px;
-    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
+    height:0.125rem; width:0%; max-width:7.5rem; margin:1.375rem 0 2.75rem;
+    background: rgba(0,0,0,0.45);
     transition:width 1s var(--ease-out);
     position:relative; z-index:1;
 }
 .about-accent-line.is-visible { width:100%; }
-.about-text p { font-size:17px; line-height:1.75; color: var(--text-dim-5); max-width:580px; position:relative; z-index:1; }
-.about-text p + p { margin-top:28px; }
+.about-text p { font-size:1.0625rem; line-height:1.75; color: var(--text-dim-5); max-width:36.25rem; position:relative; z-index:1; }
+.about-text p + p { margin-top:1.75rem; }
 .about-visual {
-    width:100%; aspect-ratio:4/5; overflow:hidden; background:#000;
-    border-radius:4px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    width:100%; aspect-ratio:4/5; overflow:hidden; background:#eaeaea;
+    border-radius:0.25rem;
+    box-shadow:0 1.25rem 3.75rem rgba(0,0,0,0.12);
 }
 .about-video {
     width:100%; height:100%; object-fit:cover; display:block;
@@ -335,126 +429,177 @@ a { color:inherit; }
 ========================================================= */
 .preview-section {
     position:relative; width:100%; background: var(--bg-dark);
-    padding-top: clamp(80px, 12vh, 160px);
-    padding-bottom: clamp(80px, 12vh, 160px);
+    padding-top: clamp(5rem, 12vh, 10rem);
+    padding-bottom: clamp(5rem, 12vh, 10rem);
 }
-.preview-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:60px; }
+.preview-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:3.75rem; }
 .preview-head .section-title { margin-bottom:0; }
 
-/* ─── ARTIST MARQUEE + BENTO MOSAIC ─── */
-.artist-marquee-wrapper {
-    overflow:hidden; width:100%;
-    margin-top: 60px;
-    margin-bottom: 60px;
-    -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 4%, #000 96%, transparent 100%);
-    mask-image:linear-gradient(to right, transparent 0%, #000 4%, #000 96%, transparent 100%);
+/* ─── ARTIST BENTO GRID ─── */
+.bento-fade {
+    width:100%;
+    margin-top:3.75rem;
+    padding:1.125rem 0;
+    overflow:hidden;
 }
-.artist-marquee-track {
-    display:flex; width:max-content; gap:0;
-    animation:marqueeScroll 40s linear infinite;
+/* Nekonečný marquee – track plynule jede doleva, na hover se pozastaví */
+.bento-track {
+    display:flex;
+    width:max-content;
+    animation:bentoScroll 60s linear infinite;
     will-change:transform;
-    transform:translateZ(0);
-    backface-visibility:hidden;
 }
-.artist-marquee-wrapper:hover .artist-marquee-track { animation-play-state:paused; }
-@keyframes marqueeScroll {
+.bento-fade:hover .bento-track { animation-play-state:paused; }
+@keyframes bentoScroll {
     from { transform:translateX(0); }
-    to   { transform:translateX(-50%); }
+    to   { transform:translateX(-50%); }   /* track = 2 identické poloviny → bezešvý loop */
 }
 
+/* Bento batch – jen čtverce a vertikální obdélníky (žádné horizontální tahy).
+   Čtvercové buňky (stejný clamp pro sloupce i řady). */
 .bento-mosaic {
     display:grid;
-    grid-template-rows:repeat(2, clamp(200px, 35vh, 520px));
-    grid-auto-columns:clamp(150px, 18vw, 340px);
-    grid-auto-flow:column dense;
-    gap:14px;
-    padding-right:14px;
+    grid-template-columns:repeat(8, clamp(6.75rem, 11.5vw, 10.625rem));
+    grid-template-rows:repeat(3, clamp(6.75rem, 11.5vw, 10.625rem));
+    gap:0.75rem;
+    margin-right:0.75rem;   /* mezera mezi batchi (místo flex gapu kvůli přesnému -50% loopu) */
     flex-shrink:0;
+    position:relative;   /* offsetLeft/Top relativně k batchi pro crowd parting */
 }
-
-.bento-item.item-tall { grid-row:span 2; }
-.bento-item.item-wide { grid-column:span 2; }
-.bento-item.item-huge { grid-row:span 2; grid-column:span 2; }
+/* PRVNÍ batch – pevná hierarchie dle důležitosti (dominant M = 2×3). */
+.bento-fixed {
+    grid-template-areas:
+        "a c e M M f i k"
+        "a d e M M g i l"
+        "b d e M M h j l";
+}
+.bento-fixed > :nth-child(1)  { grid-area:M; }   /* #1 – dominantní centrální (2×3) */
+.bento-fixed > :nth-child(2)  { grid-area:e; }   /* #2 – vysoký vertikál (1×3) */
+.bento-fixed > :nth-child(3)  { grid-area:a; }   /* #3–6 – vertikály (1×2) */
+.bento-fixed > :nth-child(4)  { grid-area:d; }
+.bento-fixed > :nth-child(5)  { grid-area:i; }
+.bento-fixed > :nth-child(6)  { grid-area:l; }
+.bento-fixed > :nth-child(7)  { grid-area:b; }   /* #7–13 – čtverce (1×1) */
+.bento-fixed > :nth-child(8)  { grid-area:c; }
+.bento-fixed > :nth-child(9)  { grid-area:f; }
+.bento-fixed > :nth-child(10) { grid-area:g; }
+.bento-fixed > :nth-child(11) { grid-area:h; }
+.bento-fixed > :nth-child(12) { grid-area:j; }
+.bento-fixed > :nth-child(13) { grid-area:k; }
+/* NÁSLEDNÉ batche – náhodné: plní se po sloupcích, každá dlaždice span 1 (čtverec)
+   nebo span 2 (vertikál); přiřazuje JS. */
+.bento-random {
+    grid-auto-flow:column;
+    grid-template-areas:none;
+}
 
 .bento-item {
-    display:block; overflow:hidden; position:relative;
+    display:block; position:relative;
     background: var(--bg-card);
-    border-radius:4px;
-    border:1px solid var(--border-subtle);
-    transition:opacity var(--t-med) var(--ease-spring), filter var(--t-med) var(--ease-spring);
+    border-radius:0;
+    border:0.0625rem solid var(--border-subtle);
+    transition:transform 0.55s var(--ease-spring),
+               opacity var(--t-med) var(--ease-spring),
+               filter var(--t-med) var(--ease-spring);
 }
+.bento-item::before {
+    display:none;   /* glow okraj odebrán – flat design */
+    content:''; position:absolute; inset:-0.0625rem;
+    border-radius:0; padding:0.0625rem; z-index:2;
+    background:conic-gradient(
+        from var(--border-angle),
+        transparent 0%, transparent 72%,
+        rgba(var(--accent),0.5) 82%,
+        rgba(var(--accent),0.9) 88%,
+        rgba(var(--accent),0.5) 94%,
+        transparent 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    filter: drop-shadow(0 0 0.25rem rgba(var(--accent),0.45));
+    opacity:0; transition: opacity 0.6s var(--ease-out); pointer-events:none;
+}
+.bento-item:hover::before {
+    opacity:1; animation: borderSpin 3.5s linear infinite;
+}
+.bento-item picture { display:block; width:100%; height:100%; }
 .bento-item img {
-    width:100%; height:100%; object-fit:cover; object-position:center 15%; display:block;
+    width:100%; height:100%; object-fit:cover; object-position:center top; display:block;
+    border-radius:0;
     will-change:transform; backface-visibility:hidden; transform:translateZ(0);
-    transition:transform var(--t-med) var(--ease-out);
 }
-.bento-item:hover img { transform:scale(1.03); }
-
-.crop-top    img { object-position:top !important; }
-.crop-center img { object-position:center !important; }
-.crop-bottom img { object-position:bottom !important; }
-
-/* :has() dimming — only original block, not aria-hidden duplicate */
-.bento-mosaic:not([aria-hidden]):has(.bento-item:hover) .bento-item:not(:hover) {
-    opacity:0.3; filter:grayscale(50%);
+/* Hover: zvětšení + vyzdvižení nad ostatní (z-index), hrany zůstanou viditelné */
+.bento-item:hover {
+    transform:scale(1.05);
+    z-index:10;
 }
 
+
+/* Ostatní dlaždice se ztlumí, když některou najedeš */
+.bento-mosaic:has(.bento-item:hover) .bento-item:not(:hover) {
+    opacity:0.4; filter:grayscale(40%);
+}
+
+/* Stejný styl jako .form-submit (standardní tlačítko webu) – animovaný conic
+   glow okraj na hover, jemné pozadí, žádný statický rámeček. */
 .btn-outline {
-    font-family: var(--font-bold); font-size:13px; letter-spacing:0.1em;
-    text-transform:uppercase; text-decoration:none; white-space:nowrap; color:#fff;
-    padding:14px 28px; border:1px solid rgba(255,255,255,0.12);
-    background:#0f0a18;
-    border-radius:3px;
-    transition:border-color 0.5s var(--ease-spring), background 0.5s var(--ease-spring);
+    position:relative; display:inline-block;
+    font-family: var(--font-bold); font-size:0.875rem; letter-spacing:0.1em;
+    text-transform:uppercase; text-decoration:none; white-space:nowrap; color:#fff; cursor:none;
+    padding:1.125rem 3.125rem; border:none;
+    background:rgb(var(--accent));
+    border-radius:0.25rem;
+    transition:background 0.5s var(--ease-out), transform 0.5s var(--ease-spring);
 }
-.btn-outline:hover { border-color:rgba(255,255,255,0.4); background:#1a1228; }
+.btn-outline:hover { background:#000; transform:translateY(-0.125rem); }
+.home .btn-outline::before { display:none; }   /* glow okraj na HP odebrán – flat design */
 
 /* =========================================================
    FOOTER
 ========================================================= */
 .site-footer {
     width:100%;
-    background:linear-gradient(180deg, transparent 0%, rgba(20,20,25,0.6) 100%);
-    padding:80px 60px 32px;
-    display:flex; flex-direction:column; gap:40px;
+    background:var(--bg-dark);
+    position:relative; z-index:2;
+    padding:5rem 3.75rem 2rem;
+    display:flex; flex-direction:column; gap:2.5rem;
     margin-top:0 !important;
     border-top:none !important;
     box-shadow:none !important;
 }
 .footer-top {
-    display:flex; justify-content:space-between; align-items:center;
+    display:flex; justify-content:space-between; align-items:flex-start;
 }
 .footer-logo img {
-    width:200px; height:auto;
+    width:12.5rem; height:auto;
+    filter:brightness(0);
     opacity:0.85; transition:opacity 0.5s var(--ease-spring);
 }
 .footer-logo:hover img { opacity:1; }
 .footer-nav {
-    display:flex; gap:40px; align-items:center;
+    display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;
 }
 .footer-nav a {
-    font-family: var(--font-bold);
-    font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
-    color:#fff; text-decoration:none; position:relative;
+    font-family: var(--font-extended);
+    font-size:0.8125rem; letter-spacing:0.06em; line-height:1.1; text-transform:uppercase;
+    color: var(--ink); text-decoration:none; position:relative;
 }
 .footer-nav a::after {
-    content:''; position:absolute; bottom:-4px; left:50%;
+    content:''; position:absolute; bottom:-0.25rem; left:50%;
     transform:translateX(-50%);
-    height:1px; width:0%; opacity:0;
-    background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%);
+    height:0.0625rem; width:0%; opacity:0;
+    background: rgba(0,0,0,0.75);
     transition:width 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
 }
 .footer-nav a:hover::after { width:100%; opacity:1; }
-.footer-divider {
-    width:100%; height:1px; border:none;
-    background: rgba(255,255,255,0.12);
-    box-shadow: none;
-}
+.footer-divider { display:none; }
 .footer-bottom {
     display:flex; justify-content:space-between; align-items:center;
     font-family: var(--font-light);
-    font-size:13px; color: var(--text-dim-2);
-    flex-wrap:wrap; gap:12px;
+    font-size:0.8125rem; color: var(--text-dim-2);
+    flex-wrap:wrap; gap:0.75rem;
 }
 .footer-bottom-left,
 .footer-bottom-right {
@@ -464,15 +609,18 @@ a { color:inherit; }
     color: var(--text-dim-2); text-decoration:none;
     transition:color 0.45s var(--ease-spring);
 }
-.footer-bottom a:hover { color:#fff; }
-.separator { margin:0 10px; opacity:0.4; font-size:10px; }
+.footer-bottom a:hover { color: var(--ink); }
+.separator { margin:0 0.625rem; opacity:0.4; font-size:0.625rem; }
 
 /* =========================================================
    PODSTRÁNKY
 ========================================================= */
 body.subpage {
-    background:radial-gradient(120% 80% at 50% 0%, #1d1630 0%, #140f22 45%, #0a0612 100%);
+    background:radial-gradient(120% 80% at 50% 0%, #ffffff 0%, #fafafa 45%, #f3f3f4 100%);
     min-height:100vh; display:flex; flex-direction:column;
+}
+body.gallery-page {
+    background: var(--bg-dark);
 }
 .subpage-header {
     position:fixed; top:0; left:0; right:0; z-index:1000;
@@ -481,52 +629,87 @@ body.subpage {
     pointer-events: none;
 }
 .page-main { flex:1 0 auto; width:100%; position:relative; z-index:2; }
-body.subpage:not(.artist-page) .page-main { padding-top:90px; }
+body.subpage:not(.artist-page) .page-main { padding-top:5.625rem; }
 
 /* =========================================================
    SOCIÁLNÍ IKONY
 ========================================================= */
-.socials { display:flex; align-items:center; gap:14px; }
+.socials { display:flex; align-items:center; gap:0.875rem; }
 .socials a {
     display:inline-flex; opacity:.8;
     transition:opacity 0.45s var(--ease-spring), transform 0.45s var(--ease-spring);
 }
-.socials a:hover { opacity:1; transform:translateY(-2px); }
-.socials svg { width:22px; height:22px; display:block; }
+.socials a:hover { opacity:1; transform:translateY(-0.125rem); }
+.socials svg { width:1.375rem; height:1.375rem; display:block; }
 
-.socials-lg { justify-content:center; gap:30px; }
-.socials-lg svg { width:30px; height:30px; }
+.socials-lg { justify-content:center; gap:1.875rem; }
+.socials-lg svg { width:1.875rem; height:1.875rem; }
 
 /* =========================================================
    GALERIE NAŠI UMĚLCI
 ========================================================= */
 .gallery-section {
     width:100%;
-    padding: clamp(40px, 5vh, 60px) 0 clamp(80px, 12vh, 130px) 0;
+    padding: clamp(2.5rem, 5vh, 3.75rem) 0 clamp(5rem, 12vh, 8.125rem) 0;
     position:relative;
+    background:var(--bg-dark);
 }
 .gallery-section::before {
-    content:''; position:absolute; top:20%; left:50%; transform:translateX(-50%);
-    width:900px; height:500px; pointer-events:none; z-index:0;
+    content:''; position:absolute; top:10%; left:50%; transform:translateX(-50%);
+    width:87.5rem; height:50rem; pointer-events:none; z-index:0;
     background:radial-gradient(ellipse at center,
-        rgba(188,179,255,0.12) 0%, rgba(113,107,153,0.07) 50%, transparent 70%);
-    filter:blur(60px);
+        rgba(var(--violet-2),0.06) 0%, rgba(var(--violet-2),0.03) 38%, rgba(0,0,0,0) 68%);
+    filter:blur(3.75rem);
 }
 .gallery-section .container { position:relative; z-index:1; }
 .gallery-title {
     font-family: var(--font-extended);
-    font-size: clamp(28px, 3.5vw, 46px);
+    font-size: clamp(1.75rem, 3.5vw, 2.875rem);
     letter-spacing:-0.02em;
-    text-align:center; margin:40px 0 90px 0; text-transform:uppercase;
+    text-align:center; margin:2.5rem 0 5.625rem 0; text-transform:uppercase;
 }
-.gallery-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:46px; }
+.gallery-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:2.875rem; }
+
+@property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0turn;
+    inherits: false;
+}
 
 .gallery-card {
     display:flex; flex-direction:column;
     background: var(--bg-card);
-    border:1px solid var(--border-subtle); border-radius:4px;
-    text-decoration:none;
+    border:0.0625rem solid var(--border-subtle); border-radius:0.25rem;
+    text-decoration:none; position:relative;
     transition:border-color var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out), filter var(--t-med) var(--ease-out);
+}
+.gallery-card::before {
+    content:''; position:absolute; inset:-0.0625rem;
+    border-radius:0.3125rem; padding:0.0625rem;
+    background:conic-gradient(
+        from var(--border-angle),
+        transparent 0%,
+        transparent 72%,
+        rgba(var(--accent),0.5) 82%,
+        rgba(var(--accent),0.9) 88%,
+        rgba(var(--accent),0.5) 94%,
+        transparent 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    filter: drop-shadow(0 0 0.25rem rgba(var(--accent),0.45));
+    opacity:0;
+    transition: opacity 0.4s var(--ease-out);
+    pointer-events:none;
+}
+.gallery-card:hover::before {
+    opacity:1;
+    animation: borderSpin 2.2s linear infinite;
+}
+@keyframes borderSpin {
+    to { --border-angle: 1turn; }
 }
 .gallery-card:hover { border-color: var(--border-hover); }
 .gallery-card > a { display:block; overflow:hidden; }
@@ -538,112 +721,246 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 .gallery-card:hover .photo { transform:scale(1.05); }
 .gallery-card .card-footer {
     display:flex; justify-content:space-between; align-items:center;
-    padding:12px 16px 16px;
+    padding:0.75rem 1rem 1rem;
 }
 .gallery-card .card-name {
-    font-family: var(--font-extended); font-size:21px;
+    font-family: var(--font-extended); font-size:1.3125rem;
     letter-spacing:-0.01em; text-transform:uppercase;
     text-decoration:none;
     transition: color 0.35s var(--ease-out);
 }
 .gallery-card:hover .card-name { color:rgba(var(--accent),0.9); }
-.artist-socials { display:flex; gap:14px; align-items:center; }
+.artist-socials { display:flex; gap:0.875rem; align-items:center; }
 .artist-socials a {
-    opacity:1; color:#fff;
+    opacity:1; color: var(--ink);
     display:flex; align-items:center; justify-content:center;
     transition:opacity 0.45s var(--ease-spring), transform 0.45s var(--ease-spring);
 }
-.artist-socials a:hover { opacity:1; transform:translateY(-2px); }
-.artist-socials svg { width:20px; height:20px; display:block; }
+.artist-socials a:hover { opacity:1; transform:translateY(-0.125rem); }
+.artist-socials svg { width:1.25rem; height:1.25rem; display:block; }
 
 /* =========================================================
    FORMULÁŘ
 ========================================================= */
-.form-section { width:100%; padding:60px 0 130px 0; }
-.form-intro { text-align:center; margin-bottom:80px; }
+.form-section { width:100%; padding:3.75rem 0 8.125rem 0; }
+.form-intro { text-align:center; margin-bottom:5rem; }
 .form-intro h1, .form-intro h2 {
     font-family: var(--font-bold);
-    font-size: clamp(28px, 4vw, 52px);
+    font-size: clamp(1.75rem, 4vw, 3.25rem);
     letter-spacing:-0.02em;
-    text-transform:uppercase; margin-bottom:28px; font-weight:normal;
+    text-transform:uppercase; margin-bottom:1.375rem; font-weight:normal;
 }
-.form-intro p { font-size:17px; line-height:1.65; color: var(--text-dim-5); max-width:560px; margin:0 auto; }
+.form-intro p {
+    font-family: var(--font-light);
+    font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
+    line-height: 1.6; letter-spacing: 0.004em;
+    color: var(--text-dim-5);
+    max-width: 36.25rem; margin: 0 auto;
+    text-wrap: balance;
+}
 
-.inquiry-form { display:flex; flex-direction:column; max-width:980px; margin:0 auto; }
-.field { margin-bottom:42px; }
+.inquiry-form { display:flex; flex-direction:column; max-width:61.25rem; margin:0 auto; }
+.field { margin-bottom:2.625rem; }
 .field label {
-    display:block; font-family: var(--font-bold); font-size:11px; letter-spacing:0.15em;
-    text-transform:uppercase; margin-bottom:12px; color: var(--text-dim-3);
+    display:block; font-family: var(--font-bold); font-size:0.8125rem; letter-spacing:0.15em;
+    text-transform:uppercase; margin-bottom:0.75rem; color: var(--text-dim-3);
 }
 .field input, .field textarea {
-    width:100%; font-family: var(--font-light); font-size:17px; color:#fff; cursor:text;
-    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.22);
-    border-radius:4px; padding:15px 18px;
+    width:100%; font-family: var(--font-light); font-size:0.8125rem; color: var(--ink); cursor:text;
+    text-transform:lowercase;
+    background:rgba(0,0,0,0.04); border:none;
+    border-radius:0.25rem; padding:0.9375rem 1.125rem;
     transition:border-color 0.5s var(--ease-spring), background 0.5s var(--ease-spring),
                box-shadow 0.5s var(--ease-spring);
 }
-.field input { height:58px; }
-.field textarea { min-height:150px; resize:vertical; }
+.field input { height:3.625rem; }
+.field textarea { min-height:9.375rem; resize:vertical; }
 .field input::placeholder, .field textarea::placeholder {
-    color:rgba(255,255,255,0.28); font-family: var(--font-light);
+    color:transparent; font-family: var(--font-light);
+    transition: color 0.4s var(--ease-out);
+}
+.field input:hover::placeholder,
+.field input:focus::placeholder,
+.field textarea:hover::placeholder,
+.field textarea:focus::placeholder {
+    color:rgba(0,0,0,0.38);
 }
 .field input:focus, .field textarea:focus {
-    outline:none; background:rgba(255,255,255,0.07);
+    outline:none; background:rgba(0,0,0,0.06);
     border-color:rgba(var(--violet-1),0.7);
-    box-shadow:0 0 0 3px rgba(var(--violet-1),0.10);
+    box-shadow:0 0 0 0.1875rem rgba(var(--violet-1),0.08);
+}
+
+.input-wrap {
+    position:relative; border-radius:0.25rem;
+    transition: background 0.3s var(--ease-out);
+}
+.input-wrap:hover input,
+.input-wrap:hover textarea {
+    background: var(--bg-darker);
+    transition: background 0.8s var(--ease-out);
+}
+.input-wrap::before,
+.form-submit::before,
+.btn-outline::before {
+    content:''; position:absolute; inset:-0.0625rem;
+    border-radius:0.3125rem; padding:0.0625rem;
+    background:conic-gradient(
+        from var(--border-angle),
+        transparent 0%,
+        transparent 72%,
+        rgba(var(--accent),0.5) 82%,
+        rgba(var(--accent),0.9) 88%,
+        rgba(var(--accent),0.5) 94%,
+        transparent 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    filter: drop-shadow(0 0 0.25rem rgba(var(--accent),0.45));
+    opacity:0;
+    transition: opacity 0.6s var(--ease-out);
+    pointer-events:none;
+}
+.input-wrap:hover::before,
+.input-wrap:focus-within::before,
+.form-submit:hover::before,
+.btn-outline:hover::before {
+    opacity:1;
+    animation: borderSpin 3.5s linear infinite;
 }
 
 .form-submit {
-    align-self:flex-end; margin-top:14px; font-family: var(--font-bold);
-    font-size:14px; letter-spacing:0.1em; text-transform:uppercase; color:#fff; cursor:none;
-    padding:18px 50px; border:1px solid rgba(255,255,255,0.22);
-    background:linear-gradient(180deg, rgba(var(--violet-2),0.20) 0%, rgba(var(--violet-1),0.06) 100%);
-    border-radius:3px;
-    transition:border-color 0.5s var(--ease-spring), transform 0.5s var(--ease-spring), background 0.5s var(--ease-spring);
+    align-self:flex-end; margin-top:0.875rem; font-family: var(--font-bold); position:relative;
+    font-size:0.875rem; letter-spacing:0.1em; text-transform:uppercase; color:#fff; cursor:none;
+    padding:1.125rem 3.125rem; border:none;
+    background:rgb(var(--accent));
+    border-radius:0.25rem;
+    transition:background 0.5s var(--ease-out), transform 0.5s var(--ease-spring), border-color 0.5s var(--ease-spring);
 }
 .form-submit:hover {
-    border-color:rgba(var(--violet-1),0.5);
-    transform:translateY(-2px);
-    background:linear-gradient(180deg, rgba(var(--violet-1),0.22) 0%, rgba(var(--violet-1),0.12) 100%);
+    background:#000; transform:translateY(-0.125rem);
+}
+
+/* =========================================================
+   NEZÁVAZNÁ POPTÁVKA — flat hover (sjednoceno s homepage)
+========================================================= */
+/* pryč rotující conic-gradient glow okraj na polích i tlačítku */
+body.poptavka-page .input-wrap::before,
+body.poptavka-page .form-submit::before { display:none; }
+
+/* pole: spodní akcentní linka, která se na hover/focus vytře zprava (jako eventy) */
+body.poptavka-page .field { position:relative; }
+body.poptavka-page .field::after {
+    content:''; position:absolute; left:0; right:0; bottom:0;
+    height:0.0625rem;
+    background: rgba(var(--accent),0.85);
+    transform:scaleX(0); transform-origin:right center;
+    transition:transform 0.5s var(--ease-out);
+    pointer-events:none;
+}
+body.poptavka-page .field:hover::after,
+body.poptavka-page .field:focus-within::after { transform:scaleX(1); }
+
+/* bez glow ringu na focus – čistý flat vzhled */
+body.poptavka-page .field input:focus,
+body.poptavka-page .field textarea:focus { box-shadow:none; }
+
+/* =========================================================
+   PRÁVNÍ / TEXTOVÁ STRÁNKA (ochrana osobních údajů)
+========================================================= */
+.legal-section {
+    width:100%;
+    padding: clamp(4.5rem, 11vh, 7.5rem) 0 clamp(5rem, 12vh, 8.75rem) 0;
+}
+.legal-section .container { max-width: calc(52rem + var(--container-pad) * 2); }
+.legal-title {
+    font-family: var(--font-extended);
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    letter-spacing:-0.01em; line-height:1.2;
+    text-transform:uppercase; font-weight:normal;
+    margin-bottom:1rem;
+}
+.legal-meta {
+    font-family: var(--font-light);
+    font-size:1.0625rem; line-height:1.75; letter-spacing:0;
+    color: var(--text-dim-5);
+    display:block; margin-bottom: clamp(2.5rem, 6vh, 4rem);
+}
+.legal-content h2 {
+    font-family: var(--font-extended);
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    letter-spacing:-0.01em; line-height:1.2; font-weight:normal;
+    text-transform:uppercase;
+    margin: clamp(2.25rem, 5vh, 3.25rem) 0 1rem;
+}
+.legal-content > h2:first-child { margin-top:0; }
+.legal-content p {
+    font-family: var(--font-light);
+    font-size:1.0625rem; line-height:1.75;
+    color: var(--text-dim-5); max-width:46rem;
+    margin-bottom:1.25rem;
+}
+.legal-content ul { list-style:none; margin:0 0 1.25rem; padding:0; max-width:46rem; }
+.legal-content li {
+    font-family: var(--font-light);
+    font-size:1.0625rem; line-height:1.75; color: var(--text-dim-5);
+    position:relative; padding-left:1.25rem; margin-bottom:0.5rem;
+}
+.legal-content li::before {
+    content:''; position:absolute; left:0; top:0.7rem;
+    width:0.3125rem; height:0.3125rem; border-radius:50%;
+    background: rgba(var(--accent),0.6);
+}
+.legal-content a {
+    color: var(--ink); text-decoration:underline;
+    text-underline-offset:0.15em; text-decoration-color: rgba(0,0,0,0.3);
+    transition: text-decoration-color 0.3s var(--ease-out);
+}
+.legal-content a:hover { text-decoration-color: var(--ink); }
+.legal-divider {
+    height:0.0625rem; width:100%; background: var(--border-mid);
+    margin: clamp(2.5rem, 6vh, 3.75rem) 0;
 }
 
 /* =========================================================
    STRÁNKA TÝM
 ========================================================= */
-.team-section { width:100%; padding:60px 0 150px 0; }
+.team-section { width:100%; padding:3.75rem 0 9.375rem 0; }
 .team-title {
     font-family: var(--font-bold);
-    font-size: clamp(28px, 4vw, 52px);
+    font-size: clamp(1.75rem, 4vw, 3.25rem);
     letter-spacing:-0.02em;
-    text-transform:uppercase; margin-bottom:55px; font-weight:normal;
+    text-transform:uppercase; margin-bottom:3.4375rem; font-weight:normal;
 }
 .team-panel {
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.07);
-    border-radius:4px; padding:60px;
+    background:rgba(0,0,0,0.025);
+    border:0.0625rem solid rgba(0,0,0,0.08);
+    border-radius:0.25rem; padding:3.75rem;
 }
-.team-card { display:grid; grid-template-columns:40% 1fr; gap:40px; align-items:start; }
-.team-photo { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:2px; }
+.team-card { display:grid; grid-template-columns:40% 1fr; gap:2.5rem; align-items:start; }
+.team-photo { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:0.125rem; }
 .team-name {
     font-family: var(--font-bold);
-    font-size: clamp(22px, 2.8vw, 36px);
+    font-size: clamp(1.375rem, 2.8vw, 2.25rem);
     letter-spacing:-0.01em;
-    text-transform:uppercase; margin-bottom:34px; font-weight:normal;
+    text-transform:uppercase; margin-bottom:2.125rem; font-weight:normal;
 }
-.team-bio p { font-size:17px; line-height:1.8; color:rgba(255,255,255,0.74); }
-.team-bio p + p { margin-top:24px; }
-.team-socials { display:flex; justify-content:flex-end; gap:32px; margin-top:54px; }
-.team-socials svg { width:30px; height:30px; }
+.team-bio p { font-size:1.0625rem; line-height:1.8; color:rgba(0,0,0,0.72); }
+.team-bio p + p { margin-top:1.5rem; }
+.team-socials { display:flex; justify-content:flex-end; gap:2rem; margin-top:3.375rem; }
+.team-socials svg { width:1.875rem; height:1.875rem; }
 
 /* =========================================================
    DETAIL UMĚLCE
 ========================================================= */
 .artist-hero {
-    position:relative; width:100%; height:100vh; min-height:600px;
+    position:relative; width:100%; height:100vh; min-height:37.5rem;
     overflow:hidden;
 }
-.artist-hero .top-nav {
-    position:fixed; top:0; left:0; width:100%; z-index:1000;
+.artist-page .top-nav {
+    position:fixed; top:0; left:0; right:0; width:100%; z-index:1000;
     background: transparent;
     mix-blend-mode: difference;
     pointer-events: none;
@@ -657,46 +974,46 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 
 .artist-hero-overlay {
     position:absolute; inset:0; z-index:1;
-    background:linear-gradient(0deg, var(--bg-darker) 0%, rgba(5,5,8,0.45) 35%, transparent 65%);
+    background:linear-gradient(0deg, rgba(8,8,10,0.92) 0%, rgba(5,5,8,0.45) 35%, transparent 65%);
 }
 
 .artist-hero-name {
-    position:absolute; bottom:clamp(36px, 6vh, 80px); left:clamp(36px, 4vw, 80px);
+    position:absolute; bottom:clamp(2.25rem, 6vh, 5rem); left:clamp(2.25rem, 4vw, 5rem);
     z-index:2;
 }
 .artist-hero-name span {
     font-family: var(--font-extended);
-    font-size:clamp(52px, 11vw, 190px);
+    font-size:clamp(3.25rem, 11vw, 11.875rem);
     text-transform:uppercase;
     letter-spacing:-0.03em; line-height:0.85;
     color:#fff; display:block;
 }
 
 /* ── About section (editorial 2-col grid) ── */
-.artist-about { background: var(--bg-dark); padding:clamp(60px, 10vh, 140px) 0; }
+.artist-about { background: var(--bg-dark); padding:clamp(3.75rem, 10vh, 8.75rem) 0; }
 .artist-about-grid {
-    display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
+    display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;
 }
 .artist-about-eyebrow {
-    font-family: var(--font-bold); font-size:11px;
+    font-family: var(--font-bold); font-size:0.6875rem;
     letter-spacing:0.22em; text-transform:uppercase;
-    color:rgba(255,255,255,0.36); margin-bottom:20px; display:block;
+    color:rgba(0,0,0,0.5); margin-bottom:1.25rem; display:block;
 }
 .artist-about-heading {
     font-family: var(--font-extended);
-    font-size:clamp(26px, 3.2vw, 46px);
+    font-size:clamp(1.625rem, 3.2vw, 2.875rem);
     letter-spacing:-0.02em; text-transform:uppercase; line-height:1.05;
 }
 .artist-about-text p {
-    font-size:17px; line-height:1.75;
-    color:rgba(255,255,255,0.75); margin-bottom:28px;
+    font-size:1.0625rem; line-height:1.75;
+    color:rgba(0,0,0,0.75); margin-bottom:1.75rem;
 }
-.artist-about-text .socials-lg { margin-top:40px; }
+.artist-about-text .socials-lg { margin-top:2.5rem; }
 
 .artist-about-portrait {
     position:relative; aspect-ratio:4/5;
-    overflow:hidden; border-radius:4px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    overflow:hidden; border-radius:0.25rem;
+    box-shadow:0 1.25rem 3.125rem rgba(0,0,0,0.12);
 }
 .artist-about-portrait img {
     width:100%; height:100%; object-fit:cover; object-position:center 15%;
@@ -705,70 +1022,166 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 }
 .artist-about-portrait:hover img { transform:scale(1.03); }
 
-/* Legacy centered bio */
-.artist-bio { width:100%; padding:90px 0 70px 0; text-align:center; }
-.artist-bio p { font-size:18px; line-height:1.7; color:rgba(255,255,255,0.82); max-width:720px; margin:0 auto 50px auto; }
+/* Centered bio – editorial lead */
+.artist-bio { width:100%; padding:clamp(5.25rem,12vh,8.25rem) 0 clamp(3.75rem,8vh,5.375rem); text-align:center; }
+.artist-bio .container { display:flex; flex-direction:column; align-items:center; }
+.artist-bio-eyebrow {
+    font-family: var(--font-bold);
+    font-size:0.6875rem; letter-spacing:0.28em; text-transform:uppercase;
+    color:rgba(0,0,0,0.5);
+    margin-bottom:1.875rem; display:block;
+}
+.artist-bio p {
+    font-family: var(--font-light);
+    font-size:clamp(1.0625rem, 1.35vw, 1.3125rem);
+    line-height:1.6; letter-spacing:0.004em;
+    color:rgba(0,0,0,0.82);
+    max-width:43.75rem; margin:0 auto;
+    text-wrap:balance;
+}
+.artist-bio .artist-bio-divider {
+    width:3rem; height:0.0625rem; margin:2.875rem auto 0;
+    background:linear-gradient(90deg, transparent, rgba(0,0,0,0.35), transparent);
+}
+.artist-bio .socials-lg { margin-top:2.625rem; }
 
-.artist-release { width:100%; padding:30px 0 110px 0; }
-.release-card {
-    display:block; max-width:720px; margin:0 auto; position:relative;
-    aspect-ratio:16/9; border-radius:4px; overflow:hidden;
-    box-shadow:0 24px 60px -28px rgba(0,0,0,0.8);
-    transition:transform 0.5s var(--ease-spring);
-}
-.release-card:hover { transform:translateY(-6px); }
-.release-card img {
-    width:100%; height:100%; object-fit:cover;
-    will-change:transform; backface-visibility:hidden;
-    transition:transform var(--t-med) var(--ease-spring);
-}
-.release-card:hover img { transform:scale(1.04); }
-.release-card .play {
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    background:rgba(0,0,0,0.10); transition:background 0.4s var(--ease-out);
-}
-.release-card:hover .play { background:rgba(0,0,0,0.25); }
-.release-card .play svg { width:66px; height:66px; opacity:.9; }
+.artist-release { width:100%; padding:1.875rem 0 6.875rem 0; }
 
 .artist-page .events-section,
 .artist-page .form-section { background:transparent; }
-.artist-page .events-section { padding-top:40px; }
+.artist-page .events-section { padding-top:2.5rem; }
+
+/* =========================================================
+   ARTIST PAGE – sjednocený layout (dříve scopováno na katannah)
+========================================================= */
+
+/* Tmavší vršek overlaye kvůli čitelnosti navigace nad fotkou */
+body.artist-page .artist-hero-overlay {
+    background:
+        linear-gradient(to bottom, rgba(5,5,8,0.88) 0%, transparent 18%),
+        linear-gradient(to top, rgba(8,8,10,0.92) 0%, rgba(5,5,8,0.45) 35%, transparent 65%);
+}
+
+/* Bio zarovnané vlevo na hranu formuláře */
+body.artist-page .artist-bio {
+    text-align:left;
+    padding:clamp(4.5rem,10vh,7.25rem) 0 clamp(6.875rem,15vh,10.625rem);
+}
+body.artist-page .artist-bio .container {
+    align-items:flex-start;
+    max-width:calc(61.25rem + var(--container-pad) * 2);
+}
+body.artist-page .artist-bio p { margin-left:0; margin-right:0; max-width:38.75rem; }
+body.artist-page .artist-bio .socials-lg { justify-content:flex-start; }
+
+/* Nadpis i text poptávky zarovnané vlevo na hranu formuláře */
+body.artist-page .form-intro {
+    text-align:left;
+    max-width:61.25rem;
+    margin-left:auto; margin-right:auto;
+}
+body.artist-page .form-intro p { margin-left:0; margin-right:0; }
+
+/* Pole dotazníku: spodní akcentní podtržení ve stylu eventů (vytře se zprava).
+   Pozicováno přes .field (každá stránka ho má), takže není potřeba .input-wrap. */
+body.artist-page .input-wrap::before { display:none; }   /* vypnout rotující conic rámeček */
+body.artist-page .field { position:relative; }
+body.artist-page .field input,
+body.artist-page .field textarea { display:block; }
+body.artist-page .field::after,
+body.artist-page .form-submit::before {
+    content:''; position:absolute;
+    inset:auto; top:auto; left:0; right:0; bottom:0;
+    width:auto; height:0.0625rem;
+    padding:0; border-radius:0;
+    background:linear-gradient(90deg, transparent 0%, rgba(var(--accent),0.9) 50%, transparent 100%);
+    -webkit-mask:none; mask:none; filter:none;
+    box-shadow:0 0.0625rem 0.3125rem rgba(var(--accent),0.45);
+    opacity:1;
+    transform:scaleX(0); transform-origin:right center;
+    transition:transform 0.5s var(--ease-out);
+    pointer-events:none;
+}
+body.artist-page .field:hover::after,
+body.artist-page .field:focus-within::after,
+body.artist-page .form-submit:hover::before {
+    transform:scaleX(1);
+    animation:none;
+}
+/* Ztmavení pole na hover (jako u eventů řádky) */
+body.artist-page .field:hover input,
+body.artist-page .field:hover textarea {
+    background:var(--bg-darker);
+}
+
+/* ── Parallax: hero se jménem zůstane připnutý (nahoře zůstane vidět pruh
+   se jménem + kousek místa), bio se připne pod ním a sekce poptávky přes
+   obojí při scrollu najede. --hero-peek = výška viditelného pruhu hero. ── */
+body.artist-page {
+    --hero-peek: 42vh;
+}
+body.artist-page .artist-hero {
+    position: sticky;
+    top: calc(var(--hero-peek) - 100vh);   /* připne se tak, že nahoře zůstane vidět spodní pruh hero se jménem */
+    z-index: 0;
+}
+body.artist-page .artist-bio {
+    position: sticky;
+    top: var(--hero-peek);                  /* připne se hned pod pruhem se jménem */
+    min-height: calc(100vh - var(--hero-peek));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 1;
+}
+/* Sekce poptávky (a další) přejedou přes připnuté vrstvy neprůhledně */
+body.artist-page .artist-release,
+body.artist-page .form-section,
+body.artist-page .events-section {
+    position: relative;
+    z-index: 2;
+    background: var(--bg-dark);
+}
+
+/* Lehký stín pod náběžnou hranou (stacked scroll na stránce umělce) */
+body.artist-page .artist-bio,                /* najíždí přes hero se jménem */
+body.artist-page .artist-bio + section {     /* první sekce (release/poptávka) najíždí přes bio */
+    box-shadow: var(--stack-shadow);
+}
 
 /* =========================================================
    RESPONZIVITA
 ========================================================= */
 @media (max-width:1200px) {
-    :root { --card-gap:60px; }
-    .about-grid { gap:70px; }
+    :root { --card-gap:3.75rem; }
+    .about-grid { gap:4.375rem; }
 }
 @media (max-width:1100px) {
     .gallery-grid { grid-template-columns:repeat(2, 1fr); }
-    .team-card { grid-template-columns:38% 1fr; gap:36px; }
+    .team-card { grid-template-columns:38% 1fr; gap:2.25rem; }
 }
 @media (max-width:900px) {
-    :root { --container-pad:36px; --space-section:100px; --space-title:48px; }
-    .about-grid { grid-template-columns:1fr; gap:48px; }
-    .about-visual { width:100%; max-width:400px; }
-    .bento-mosaic { grid-template-rows:repeat(2, clamp(180px, 28vh, 380px)); grid-auto-columns:clamp(140px, 22vw, 290px); gap:10px; padding-right:10px; }
-    .site-footer { padding:52px 36px 28px; gap:32px; }
-    .footer-top { flex-direction:column; gap:36px; align-items:flex-start; }
-    .footer-nav { gap:24px; flex-wrap:wrap; }
-    .footer-bottom { flex-direction:column; align-items:flex-start; gap:8px; }
-    .artist-hero { height:100svh; min-height:520px; }
-    .artist-about-grid { grid-template-columns:1fr; gap:48px; }
-    .artist-about-portrait { max-width:400px; }
-    .events-row { height:54px; }
-    .events-header { font-size:13px; }
+    :root { --container-pad:2.25rem; --space-section:6.25rem; --space-title:3rem; }
+    .about-grid { grid-template-columns:1fr; gap:3rem; }
+    .about-visual { width:100%; max-width:25rem; }
+    .site-footer { padding:3.25rem 2.25rem 1.75rem; gap:2rem; }
+    .footer-top { flex-direction:column; gap:2.25rem; align-items:flex-start; }
+    .footer-nav { gap:1.5rem; flex-wrap:wrap; }
+    .footer-bottom { flex-direction:column; align-items:flex-start; gap:0.5rem; }
+    .artist-hero { height:100svh; min-height:32.5rem; }
+    .artist-about-grid { grid-template-columns:1fr; gap:3rem; }
+    .artist-about-portrait { max-width:25rem; }
+    .events-row { height:3.375rem; }
+    .events-header { font-size:0.8125rem; }
 }
 @media (max-width:768px) {
-    :root { --container-pad:22px; --space-section:80px; }
-    .top-nav { flex-wrap:wrap; gap:16px; padding-top:28px; }
-    .nav-left, .nav-right { gap:24px; }
-    .preview-head { flex-direction:column; align-items:flex-start; gap:26px; }
-    .bento-mosaic { grid-template-rows:repeat(2, clamp(140px, 24vh, 260px)); grid-auto-columns:clamp(120px, 30vw, 220px); gap:6px; padding-right:6px; }
-    .gallery-grid { grid-template-columns:1fr; gap:30px; }
-    .team-panel { padding:28px; }
-    .team-card { grid-template-columns:1fr; gap:30px; }
+    :root { --container-pad:1.375rem; --space-section:5rem; }
+    .top-nav { flex-wrap:wrap; gap:1rem; padding-top:1.75rem; }
+    .nav-left, .nav-right { gap:1.5rem; }
+    .preview-head { flex-direction:column; align-items:flex-start; gap:1.625rem; }
+    .gallery-grid { grid-template-columns:1fr; gap:1.875rem; }
+    .team-panel { padding:1.75rem; }
+    .team-card { grid-template-columns:1fr; gap:1.875rem; }
     .team-socials { justify-content:flex-start; }
     .events-header { grid-template-columns:1.2fr 1.5fr; }
     .events-row { grid-template-columns:1.2fr 1.5fr 0 0; }
@@ -776,19 +1189,19 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     .events-row .col-umelec, .events-header .col-umelec { display:none; }
 }
 @media (max-width:480px) {
-    :root { --container-pad:16px; --space-section:64px; }
-    .top-nav { flex-direction:column; align-items:center; gap:14px; padding-top:20px; padding-bottom:14px; }
-    .nav-left, .nav-right { gap:18px; justify-content:center; flex:unset; }
+    :root { --container-pad:1rem; --space-section:4rem; }
+    .top-nav { flex-direction:column; align-items:center; gap:0.875rem; padding-top:1.25rem; padding-bottom:0.875rem; }
+    .nav-left, .nav-right { gap:1.125rem; justify-content:center; flex:unset; }
     .nav-center { display:none; }
     .hero-title-container { width:92%; }
-    .section-title { font-size: clamp(28px, 8vw, 42px); }
-    .artists-section { padding-top:60px; }
-    .events-page-title { font-size:clamp(24px, 7vw, 36px); }
-    .gallery-grid { gap:20px; }
-    .team-panel { padding:20px; }
+    .section-title { font-size: clamp(1.75rem, 8vw, 2.625rem); }
+    .artists-section { padding-top:3.75rem; }
+    .events-page-title { font-size:clamp(1.5rem, 7vw, 2.25rem); }
+    .gallery-grid { gap:1.25rem; }
+    .team-panel { padding:1.25rem; }
     .form-submit { align-self:stretch; text-align:center; }
-    .artist-hero-name span { font-size:clamp(40px, 15vw, 100px); }
-    .footer-bottom-left, .footer-bottom-right { flex-direction:column; align-items:flex-start; gap:4px; }
+    .artist-hero-name span { font-size:clamp(2.5rem, 15vw, 6.25rem); }
+    .footer-bottom-left, .footer-bottom-right { flex-direction:column; align-items:flex-start; gap:0.25rem; }
     .separator { display:none; }
 }
 
@@ -801,7 +1214,7 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 /* Custom cursor */
 .custom-cursor {
     position:fixed; left:0; top:0; pointer-events:none; z-index:100001;
-    width:8px; height:8px; border-radius:50%; background:#fff;
+    width:0.5rem; height:0.5rem; border-radius:50%; background:#fff;
     mix-blend-mode:difference;
     display:flex; justify-content:center; align-items:center;
     transform:translate(-50%,-50%);
@@ -813,26 +1226,37 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     transform:translate(-50%,-50%) scale(2.5);
 }
 .custom-cursor.is-artist-hover {
-    width:90px; height:90px;
-    mix-blend-mode:normal;
+    mix-blend-mode:difference;
     transform:translate(-50%,-50%) scale(1);
 }
 .cursor-text {
     font-family: var(--font-bold), 'Helvetica Neue', sans-serif;
-    font-size:9px; letter-spacing:0.15em; text-transform:uppercase;
-    color:#000; white-space:nowrap; text-align:center; line-height:1.3;
+    font-size:0.625rem; letter-spacing:0.18em; text-transform:uppercase;
+    color:#000; white-space:nowrap; text-align:center; line-height:1;
     opacity:0; transition:opacity 0.25s var(--ease-spring);
-    padding:0 8px;
 }
-.custom-cursor.is-artist-hover .cursor-text { opacity:1; }
+.custom-cursor.is-artist-hover .cursor-text {
+    position:absolute;
+    left:0.875rem; top:50%;
+    background:#fff;
+    padding:0.5rem 1rem;
+    border-radius:0.1875rem;
+    opacity:1;
+    color:#000;
+    animation: cursorLabelIn 0.6s var(--ease-out) both;
+}
+@keyframes cursorLabelIn {
+    from { opacity:0; transform:translateY(-50%) translateX(-1.25rem); }
+    to   { opacity:1; transform:translateY(-50%) translateX(0); }
+}
 
 /* Side-label state for bento grid */
 .custom-cursor.is-bento-hover .cursor-text {
     position:absolute;
-    left:16px; top:50%;
+    left:1rem; top:50%;
     transform:translateY(-50%);
     padding:0; opacity:1;
-    font-size:11px; letter-spacing:0.2em;
+    font-size:0.6875rem; letter-spacing:0.2em;
     color:#fff;
 }
 @media (hover:none) {
@@ -842,8 +1266,9 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 
 /* Scroll progress bar */
 .scroll-bar {
-    position:fixed; top:0; left:0; height:2px; width:0%;
-    background:rgba(var(--accent),0.80);
+    position:fixed; top:0; left:0; height:0.0625rem; width:0%;
+    background: rgba(var(--accent),0.85);
+    box-shadow:none;
     mix-blend-mode:normal;
     z-index:9999; pointer-events:none;
     transition:width 0.1s ease-out;
@@ -855,7 +1280,7 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     to   { transform:none; }
 }
 .js .subpage-header,
-.js .artist-hero .top-nav {
+.js .artist-page .top-nav {
     animation:navSlideIn 0.9s var(--ease-spring) 0.1s both;
 }
 
@@ -876,11 +1301,11 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
 
 /* Event rows stagger entrance */
 @keyframes rowReveal {
-    from { opacity:0; transform:translateX(-28px); }
+    from { opacity:0; transform:translateX(-1.75rem); }
     to   { opacity:1; transform:none; }
 }
 .js .events-header,
-.js .events-row { opacity:0; transform:translateX(-28px); }
+.js .events-row { opacity:0; transform:translateX(-1.75rem); }
 .js .events-header.row-in,
 .js .events-row.row-in { animation:rowReveal .7s var(--ease-spring) both; }
 .js .events-header.revealed,
@@ -897,24 +1322,25 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
     will-change:transform;
 }
 .preloader-inner {
-    display:flex; flex-direction:column; align-items:center; gap:32px;
+    display:flex; flex-direction:column; align-items:center; gap:2rem;
     transition:opacity 0.35s var(--ease-spring);
 }
 .preloader-logo-img {
-    width:210px; height:auto;
+    width:13.125rem; height:auto;
+    filter:brightness(0);
     animation:plFadeUp 0.9s var(--ease-spring) 0.15s both;
 }
 @keyframes plFadeUp {
-    from { opacity:0; transform:translateY(14px); }
+    from { opacity:0; transform:translateY(0.875rem); }
     to   { opacity:1; transform:none; }
 }
 .preloader-line {
-    width:0; height:1px;
-    background:linear-gradient(to right, transparent, rgba(255,255,255,0.35), transparent);
+    width:0; height:0.0625rem;
+    background: rgba(0,0,0,0.2);
     animation:plLine 1s var(--ease-spring) 0.55s forwards;
 }
 @keyframes plLine {
-    to { width:210px; }
+    to { width:13.125rem; }
 }
 .preloader.is-hidden { transform:translateY(-100%); }
 .preloader.is-hidden .preloader-inner { opacity:0; }
@@ -923,32 +1349,70 @@ body.subpage:not(.artist-page) .page-main { padding-top:90px; }
    SCROLLED NAV STATE
 ========================================================= */
 .subpage-header,
-.artist-hero .top-nav {
+.artist-page .top-nav {
     transition: background 0.45s var(--ease-out),
                 backdrop-filter 0.45s var(--ease-out),
                 -webkit-backdrop-filter 0.45s var(--ease-out),
                 mix-blend-mode 0s;
 }
 
+/* .subpage-header je už full-width (left:0;right:0), pozadí stačí přímo na něm */
+html.is-scrolled .subpage-header {
+    background: rgba(244, 244, 245, 0.88);
+    backdrop-filter: blur(0.875rem);
+    -webkit-backdrop-filter: blur(0.875rem);
+    border-bottom: 0.0625rem solid var(--border-mid);
+}
 html.is-scrolled .subpage-header,
-html.is-scrolled .artist-hero .top-nav {
-    background: rgba(10, 5, 16, 0.80);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+html.is-scrolled .artist-page .top-nav {
     mix-blend-mode: normal;
 }
 
+/* Artist nav je max-width vycentrovaný – plné pozadí přes ::before na 100vw,
+   aby pruh zabíral celou šířku displeje a zůstal symetrický */
+.artist-page .top-nav::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    background: rgba(244, 244, 245, 0.88);
+    backdrop-filter: blur(0.875rem);
+    -webkit-backdrop-filter: blur(0.875rem);
+    border-bottom: 0.0625rem solid var(--border-mid);
+    transition: opacity 0.45s var(--ease-out);
+}
+html.is-scrolled .artist-page .top-nav::before {
+    opacity: 1;
+}
+
 html.is-scrolled .subpage-header .top-nav,
-html.is-scrolled .artist-hero .top-nav {
-    padding: 10px var(--container-pad);
+html.is-scrolled .artist-page .top-nav {
+    padding: 0.625rem var(--container-pad);
 }
 
 html.is-scrolled .nav-center {
     max-width: 0;
     opacity: 0;
-    transform: translateY(-12px);
+    transform: translateY(-0.75rem);
     pointer-events: none;
 }
 
+/* Light mode: ve scrollnutém stavu sedí nav na světlém skle (mix-blend:normal),
+   takže obsah musí být tmavý, aby byl čitelný. */
+html.is-scrolled .subpage-header .nav-link,
+html.is-scrolled .artist-page .top-nav .nav-link { color: var(--ink); }
+html.is-scrolled .subpage-header .logo,
+html.is-scrolled .artist-page .top-nav .logo { filter: brightness(0); }
+/* ve scrollnuté liště je podtržení tmavé (světlé sklo pod ním) */
+html.is-scrolled .subpage-header .nav-link::after,
+html.is-scrolled .artist-page .top-nav .nav-link::after {
+    background: rgba(0,0,0,0.8);
+    box-shadow: none;
+}
+
 /* Scroll offset pro kotvy – kompenzuje výšku fixní navigace */
-#eventy, #o-agenture, #kontakt { scroll-margin-top: 80px; }
+#eventy, #o-agenture, #kontakt { scroll-margin-top: 5rem; }
