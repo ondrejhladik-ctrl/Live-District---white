@@ -343,9 +343,14 @@ document.querySelectorAll('.events-table').forEach(function (table) {
                 var key = lbl ? lbl.textContent.trim() : (el.name || el.id || 'Pole');
                 lines.push(key + ': ' + (el.value.trim() || '—'));
             });
-            window.location.href = 'mailto:' + MAIL
+            var mailto = 'mailto:' + MAIL
                 + '?subject=' + encodeURIComponent('Nezávazná poptávka — Live District')
                 + '&body=' + encodeURIComponent(lines.join('\r\n'));
+            // otevři mail klient (neodnaviguje stránku) a pak přejdi na potvrzení
+            var a = document.createElement('a');
+            a.href = mailto; a.style.display = 'none';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(function () { window.location.href = 'odeslano.html'; }, 200);
         });
     });
 })();

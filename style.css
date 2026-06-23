@@ -857,6 +857,14 @@ body.subpage:not(.artist-page) .page-main { padding-top:5.625rem; }
 /* trošku větší mezera mezi (fixní) nav lištou a nadpisem */
 body.poptavka-page .form-section { padding-top: clamp(5.25rem, 9vh, 7rem); }
 
+/* =========================================================
+   STRÁNKA ODESLÁNO — potvrzení po odeslání formuláře
+========================================================= */
+body.confirm-page .form-section { min-height:62vh; display:flex; align-items:center; }
+body.confirm-page .form-intro { text-align:center; max-width:36rem; margin:0 auto; }
+body.confirm-page .form-intro p { margin-top:1.25rem; }
+body.confirm-page .form-intro .btn-outline { margin-top:2.75rem; }
+
 /* pryč rotující conic-gradient glow okraj na polích i tlačítku */
 body.poptavka-page .input-wrap::before,
 body.poptavka-page .form-submit::before { display:none; }
