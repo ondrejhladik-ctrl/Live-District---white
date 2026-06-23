@@ -8,7 +8,8 @@
       "Bash(awk '{print $5, $9}')",
       "Bash(npm install *)",
       "Bash(node optimize-images.js)",
-      "Bash(node update-html-images.js)"
+      "Bash(node update-html-images.js)",
+      "WebSearch"
     ]
   }
 }

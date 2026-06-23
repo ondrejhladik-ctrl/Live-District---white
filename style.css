@@ -339,7 +339,7 @@ a { color:inherit; }
 .events-table { width:100%; display:flex; flex-direction:column; gap:0; }
 
 .events-header, .events-row {
-    display:grid; grid-template-columns:1.5fr 2fr 3fr 2fr;
+    display:grid; grid-template-columns:1fr 2.6fr 2.6fr 1.5fr;
     align-items:center;
     padding-left:0.75rem; padding-right:0.75rem;
 }
@@ -377,6 +377,10 @@ a { color:inherit; }
 .events-row .col-club   { color: var(--ink); font-family: var(--font-light); }
 .events-row .col-umelec { color: var(--ink); font-family: var(--font-extended-53); }
 .events-row:hover .col-lokace { color: var(--ink); }
+/* obal klub+město (vytváří JS); na desktopu průhledný → tabulka beze změny */
+.col-venue { display: contents; }
+/* umělci bez eventů: jen lehká čára pod nadpisem EVENTY */
+.events-empty { width: 100%; height: 0.0625rem; background: var(--border-mid); margin: 0.75rem 0 1rem; }
 
 /* Stránka EVENTY */
 .events-page-section {
@@ -469,23 +473,21 @@ a { color:inherit; }
 /* PRVNÍ batch – pevná hierarchie dle důležitosti (dominant M = 2×3). */
 .bento-fixed {
     grid-template-areas:
-        "a c e M M f i k"
-        "a d e M M g i l"
-        "b d e M M h j l";
+        "M M e f a b c d"
+        "M M e f a b c d"
+        "M M e f g h i j";
 }
 .bento-fixed > :nth-child(1)  { grid-area:M; }   /* #1 – dominantní centrální (2×3) */
-.bento-fixed > :nth-child(2)  { grid-area:e; }   /* #2 – vysoký vertikál (1×3) */
-.bento-fixed > :nth-child(3)  { grid-area:a; }   /* #3–6 – vertikály (1×2) */
-.bento-fixed > :nth-child(4)  { grid-area:d; }
-.bento-fixed > :nth-child(5)  { grid-area:i; }
-.bento-fixed > :nth-child(6)  { grid-area:l; }
-.bento-fixed > :nth-child(7)  { grid-area:b; }   /* #7–13 – čtverce (1×1) */
-.bento-fixed > :nth-child(8)  { grid-area:c; }
-.bento-fixed > :nth-child(9)  { grid-area:f; }
-.bento-fixed > :nth-child(10) { grid-area:g; }
-.bento-fixed > :nth-child(11) { grid-area:h; }
-.bento-fixed > :nth-child(12) { grid-area:j; }
-.bento-fixed > :nth-child(13) { grid-area:k; }
+.bento-fixed > :nth-child(2)  { grid-area:e; }   /* #2–3 – vysoké vertikály (1×3) */
+.bento-fixed > :nth-child(3)  { grid-area:f; }
+.bento-fixed > :nth-child(4)  { grid-area:a; }   /* #4–7 – vertikály (1×2) */
+.bento-fixed > :nth-child(5)  { grid-area:b; }
+.bento-fixed > :nth-child(6)  { grid-area:c; }
+.bento-fixed > :nth-child(7)  { grid-area:d; }
+.bento-fixed > :nth-child(8)  { grid-area:g; }   /* #8–11 – čtverce (1×1) */
+.bento-fixed > :nth-child(9)  { grid-area:h; }
+.bento-fixed > :nth-child(10) { grid-area:i; }
+.bento-fixed > :nth-child(11) { grid-area:j; }
 /* NÁSLEDNÉ batche – náhodné: plní se po sloupcích, každá dlaždice span 1 (čtverec)
    nebo span 2 (vertikál); přiřazuje JS. */
 .bento-random {
@@ -538,8 +540,10 @@ a { color:inherit; }
 
 
 /* Ostatní dlaždice se ztlumí, když některou najedeš */
-.bento-mosaic:has(.bento-item:hover) .bento-item:not(:hover) {
-    opacity:0.4; filter:grayscale(40%);
+/* Hover focus: ztlumí CELOU koláž (všechny batche), ne jen jeden – zvýrazní najetou dlaždici.
+   Jen opacity (GPU, levné) – žádný grayscale filtr, který sekal. */
+.bento-track:has(.bento-item:hover) .bento-item:not(:hover) {
+    opacity:0.32;
 }
 
 /* Stejný styl jako .form-submit (standardní tlačítko webu) – animovaný conic
@@ -547,13 +551,14 @@ a { color:inherit; }
 .btn-outline {
     position:relative; display:inline-block;
     font-family: var(--font-bold); font-size:0.875rem; letter-spacing:0.1em;
-    text-transform:uppercase; text-decoration:none; white-space:nowrap; color:#fff; cursor:none;
-    padding:1.125rem 3.125rem; border:none;
-    background:rgb(var(--accent));
+    text-transform:uppercase; text-decoration:none; white-space:nowrap; color: var(--ink); cursor:none;
+    padding:1.125rem 3.125rem;
+    border:0.0625rem solid var(--border-mid);
+    background:transparent;
     border-radius:0.25rem;
-    transition:background 0.5s var(--ease-out), transform 0.5s var(--ease-spring);
+    transition:background 0.4s var(--ease-out), color 0.4s var(--ease-out), border-color 0.4s var(--ease-out), transform 0.5s var(--ease-spring);
 }
-.btn-outline:hover { background:#000; transform:translateY(-0.125rem); }
+.btn-outline:hover { background:#000; color:#fff; border-color:#000; transform:translateY(-0.125rem); }
 .home .btn-outline::before { display:none; }   /* glow okraj na HP odebrán – flat design */
 
 /* =========================================================
@@ -734,10 +739,11 @@ body.subpage:not(.artist-page) .page-main { padding-top:5.625rem; }
 .artist-socials a {
     opacity:1; color: var(--ink);
     display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;   /* ať se ikonky v úzkém footeru nesmáčknou (deformace TikToku) */
     transition:opacity 0.45s var(--ease-spring), transform 0.45s var(--ease-spring);
 }
 .artist-socials a:hover { opacity:1; transform:translateY(-0.125rem); }
-.artist-socials svg { width:1.25rem; height:1.25rem; display:block; }
+.artist-socials svg { width:1.25rem; height:1.25rem; display:block; flex-shrink:0; }
 
 /* =========================================================
    FORMULÁŘ
@@ -846,6 +852,9 @@ body.subpage:not(.artist-page) .page-main { padding-top:5.625rem; }
 /* =========================================================
    NEZÁVAZNÁ POPTÁVKA — flat hover (sjednoceno s homepage)
 ========================================================= */
+/* trošku větší mezera mezi (fixní) nav lištou a nadpisem */
+body.poptavka-page .form-section { padding-top: clamp(5.25rem, 9vh, 7rem); }
+
 /* pryč rotující conic-gradient glow okraj na polích i tlačítku */
 body.poptavka-page .input-wrap::before,
 body.poptavka-page .form-submit::before { display:none; }
@@ -866,6 +875,30 @@ body.poptavka-page .field:focus-within::after { transform:scaleX(1); }
 /* bez glow ringu na focus – čistý flat vzhled */
 body.poptavka-page .field input:focus,
 body.poptavka-page .field textarea:focus { box-shadow:none; }
+
+/* =========================================================
+   PER-UMĚLEC LADĚNÍ NÁHLEDOVÝCH FOTEK (zoom / kompozice)
+   – platí jen pro karty (karusel + galerie), hover zoom zachován
+========================================================= */
+/* LBOY – mírný zoom (těsnější výřez) */
+.artist-card[href="lboy.html"] .artist-photo,
+.gallery-card a[href="lboy.html"] .photo {
+    transform: scale(1.18);
+    object-position: center 30%;
+}
+.artist-card[href="lboy.html"]:hover .artist-photo,
+.gallery-card:hover a[href="lboy.html"] .photo { transform: scale(1.24); }
+
+/* ERNE100 – kompozice: zoom + posun dolů, ať není nahoře prázdno */
+.artist-card[href="erne100.html"] .artist-photo,
+.gallery-card a[href="erne100.html"] .photo {
+    transform: scale(1.22);
+    object-position: center 80%;
+}
+.artist-card[href="erne100.html"]:hover .artist-photo,
+.gallery-card:hover a[href="erne100.html"] .photo { transform: scale(1.28); }
+/* ERNE100 v bento koláži – výřez na subjekt (jinak nahoře prázdno, subjekt uříznutý) */
+.bento-item[href="erne100.html"] img { object-position: center 62%; }
 
 /* =========================================================
    PRÁVNÍ / TEXTOVÁ STRÁNKA (ochrana osobních údajů)
@@ -1166,7 +1199,8 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
     .about-visual { width:100%; max-width:25rem; }
     .site-footer { padding:3.25rem 2.25rem 1.75rem; gap:2rem; }
     .footer-top { flex-direction:column; gap:2.25rem; align-items:flex-start; }
-    .footer-nav { gap:1.5rem; flex-wrap:wrap; }
+    .footer-logo img { width:9.5rem; }                              /* logo trošku menší na mobilu */
+    .footer-nav { gap:1.5rem; flex-wrap:wrap; align-items:flex-start; }  /* nav vlevo na mobilu */
     .footer-bottom { flex-direction:column; align-items:flex-start; gap:0.5rem; }
     .artist-hero { height:100svh; min-height:32.5rem; }
     .artist-about-grid { grid-template-columns:1fr; gap:3rem; }
@@ -1176,23 +1210,39 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
 }
 @media (max-width:768px) {
     :root { --container-pad:1.375rem; --space-section:5rem; }
-    .top-nav { flex-wrap:wrap; gap:1rem; padding-top:1.75rem; }
-    .nav-left, .nav-right { gap:1.5rem; }
+    /* poptávka: titulek + úvod zarovnat vlevo (desktop zůstává na střed) */
+    body.poptavka-page .form-intro { text-align: left; }
+    body.poptavka-page .form-intro p { max-width: none; margin-left: 0; margin-right: 0; }
     .preview-head { flex-direction:column; align-items:flex-start; gap:1.625rem; }
     .gallery-grid { grid-template-columns:1fr; gap:1.875rem; }
     .team-panel { padding:1.75rem; }
     .team-card { grid-template-columns:1fr; gap:1.875rem; }
     .team-socials { justify-content:flex-start; }
-    .events-header { grid-template-columns:1.2fr 1.5fr; }
-    .events-row { grid-template-columns:1.2fr 1.5fr 0 0; }
-    .events-row .col-club, .events-header .col-club,
-    .events-row .col-umelec, .events-header .col-umelec { display:none; }
+    /* EVENTY na mobilu: datum vlevo, umělec, a klub + město na JEDNOM řádku */
+    .events-header { display: none; }
+    .events-row {
+        grid-template-columns: 4.25rem 1fr;   /* pevná šířka data → všechna jména v jedné linii */
+        grid-template-areas:
+            "kdy umelec"
+            "kdy venue";
+        column-gap: 1.125rem; row-gap: 0.25rem;
+        height: auto; padding: 1.125rem 0.5rem;
+    }
+    .events-row .col-kdy    { grid-area: kdy; align-self: start; font-size: 1.1875rem; color: var(--text-dim-4); }
+    .events-row .col-umelec { grid-area: umelec; display: block; text-align: left; font-size: 1.1875rem; }
+    .events-row .col-venue {
+        grid-area: venue; display: flex; flex-wrap: wrap; align-items: baseline;
+        font-size: 0.9375rem;
+    }
+    .events-row .col-venue .col-club   { order: 1; color: var(--text-dim-4); }
+    .events-row .col-venue .col-lokace { order: 2; color: var(--text-dim-4); }
+    .events-row .col-venue .col-lokace::before { content: "–"; margin: 0 0.4rem; color: var(--text-dim-4); }
+    /* schovej pomlčku, když chybí klub NEBO město (festival / jen město) */
+    .events-row .col-venue .col-lokace:empty::before,
+    .events-row .col-venue:has(.col-club:empty) .col-lokace::before { content: ""; margin: 0; }
 }
 @media (max-width:480px) {
     :root { --container-pad:1rem; --space-section:4rem; }
-    .top-nav { flex-direction:column; align-items:center; gap:0.875rem; padding-top:1.25rem; padding-bottom:0.875rem; }
-    .nav-left, .nav-right { gap:1.125rem; justify-content:center; flex:unset; }
-    .nav-center { display:none; }
     .hero-title-container { width:92%; }
     .section-title { font-size: clamp(1.75rem, 8vw, 2.625rem); }
     .artists-section { padding-top:3.75rem; }
@@ -1286,10 +1336,10 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
 
 /* Grid dimming */
 .carousel-track:has(.artist-card:hover) .artist-card:not(:hover) {
-    opacity:0.4; filter:grayscale(35%);
+    opacity:0.42;
 }
 .gallery-grid:has(.gallery-card:hover) .gallery-card:not(:hover) {
-    opacity:0.4; filter:grayscale(35%);
+    opacity:0.42;
 }
 
 /* Artist hero entrance zoom */
@@ -1318,7 +1368,7 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
     position:fixed; inset:0; z-index:99999;
     background: var(--bg-dark);
     display:flex; align-items:center; justify-content:center;
-    transition:transform 1.1s var(--ease-preloader) 0.15s;
+    transition:transform 0.7s var(--ease-preloader) 0.05s;
     will-change:transform;
 }
 .preloader-inner {
@@ -1416,3 +1466,79 @@ html.is-scrolled .artist-page .top-nav .nav-link::after {
 
 /* Scroll offset pro kotvy – kompenzuje výšku fixní navigace */
 #eventy, #o-agenture, #kontakt { scroll-margin-top: 5rem; }
+
+/* =========================================================
+   MOBILNÍ HLAVIČKA — hamburger + menu (JEN ≤768px; desktop beze změny)
+   .nav-toggle a .mobile-menu se vytvářejí v JS (animations.js); na desktopu skryté.
+========================================================= */
+.nav-toggle, .mobile-menu { display: none; }
+
+@media (max-width: 768px) {
+    /* Lišta: malé logo vlevo + hamburger vpravo; řádkové odkazy pryč */
+    .top-nav { flex-wrap: nowrap; gap: 0; }
+    .nav-left, .nav-right { display: none; }
+    .nav-center {
+        display: flex; justify-content: flex-start;
+        flex: 0 0 auto; max-width: none; overflow: visible;
+    }
+    .nav-center .logo { width: 7.5rem; }
+    /* mobilní logo zůstává viditelné i po odscrollování (přebíjí desktop collapse) */
+    html.is-scrolled .nav-center {
+        max-width: none; opacity: 1; transform: none; pointer-events: auto;
+    }
+
+    /* Hamburger */
+    .nav-toggle {
+        display: block; position: relative; flex: 0 0 auto;
+        width: 1.625rem; height: 1rem; padding: 0; margin: 0;
+        background: none; border: 0; cursor: pointer;
+        pointer-events: auto;   /* header má pointer-events:none */
+        -webkit-tap-highlight-color: transparent;
+    }
+    .nav-toggle span {
+        position: absolute; left: 0; width: 100%; height: 0.125rem;  /* všechny čáry stejně široké */
+        background: #fff; border-radius: 1px;   /* bílé → adaptivní přes mix-blend headeru */
+        transition: transform 0.35s var(--ease-spring), opacity 0.2s var(--ease-out), background 0.45s var(--ease-out);
+    }
+    .nav-toggle span:nth-child(1) { top: 0; }
+    .nav-toggle span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+    .nav-toggle span:nth-child(3) { bottom: 0; }
+    /* po odscrollování (světlá glass lišta, mix-blend:normal) → tmavé čárky */
+    html.is-scrolled .nav-toggle span { background: var(--ink); }
+    /* po kliknutí: hamburger → křížek (stejné čáry, postupná animace) */
+    html.menu-open .nav-toggle span:nth-child(1) { transform: translateY(0.4375rem) rotate(45deg); }
+    html.menu-open .nav-toggle span:nth-child(2) { opacity: 0; }
+    html.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-0.4375rem) rotate(-45deg); }
+    /* při otevřeném menu vyzvedni lištu (logo + křížek) nad overlay, ať je morph vidět */
+    html.menu-open .subpage-header,
+    html.menu-open .artist-page .top-nav { z-index: 100001; }
+
+    /* Fullscreen světlé menu */
+    .mobile-menu {
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        position: fixed; inset: 0; z-index: 100000;
+        background: #ffffff;
+        opacity: 0; visibility: hidden;
+        transition: opacity 0.4s var(--ease-out), visibility 0.4s var(--ease-out);
+    }
+    html.menu-open .mobile-menu { opacity: 1; visibility: visible; }
+    html.menu-open, html.menu-open body { overflow: hidden; }   /* scroll-lock */
+
+    .mobile-menu-links {
+        display: flex; flex-direction: column; align-items: center; gap: 1.875rem;
+    }
+    .mobile-menu-link {
+        font-family: var(--font-extended);
+        font-size: clamp(1.375rem, 6vw, 1.875rem);
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--ink); text-decoration: none;
+        position: relative; padding-bottom: 0.3rem;
+    }
+    .mobile-menu-link::after {
+        content: ''; position: absolute; left: 50%; bottom: 0;
+        transform: translateX(-50%);
+        width: 0; height: 0.0625rem; background: var(--ink);
+        transition: width 0.3s var(--ease-out);
+    }
+    .mobile-menu-link:hover::after, .mobile-menu-link:active::after { width: 100%; }
+}

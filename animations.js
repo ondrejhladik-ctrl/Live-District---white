@@ -22,26 +22,41 @@
     // Náhodný batch: 8 sloupců, každý vyplněn na 3 řady náhodným vzorem
     // čtverců (span 1) a vertikálů (span 2). Plní se po sloupcích → bez děr.
     var COL_PATTERNS = [[2, 1], [1, 2], [1, 1, 1]];
-    function buildRandomBatch() {
+    function buildRandomBatch(avoidFirstHref) {
         var batch = document.createElement('div');
         batch.className = 'bento-mosaic bento-random';
         var pool = shuffle(templates.slice());
-        var pi = 0;
+        // ať batch nezačíná stejným umělcem, jako skončil předchozí (na švu nejsou stejní u sebe)
+        if (avoidFirstHref && pool.length > 1 && pool[0].getAttribute('href') === avoidFirstHref) {
+            pool.push(pool.shift());
+        }
+        var pi = 0, lastHref = null;
         for (var col = 0; col < 8; col++) {
             var pat = COL_PATTERNS[Math.floor(Math.random() * COL_PATTERNS.length)];
             for (var k = 0; k < pat.length; k++) {
-                var item = pool[pi % pool.length].cloneNode(true);
+                var tpl = pool[pi % pool.length];
                 pi++;
+                var item = tpl.cloneNode(true);
                 item.style.transform = '';
                 item.style.gridRow = 'span ' + pat[k];
                 batch.appendChild(item);
+                lastHref = tpl.getAttribute('href');
             }
         }
+        batch._lastHref = lastHref;
         return batch;
     }
 
-    // 1. polovina: [pevný, náhodný, náhodný]
-    var seq = [fixed, buildRandomBatch(), buildRandomBatch()];
+    var fixedItems = fixed.querySelectorAll('.bento-item');
+    var fixedFirst = fixedItems[0].getAttribute('href');
+    var fixedLast = fixedItems[fixedItems.length - 1].getAttribute('href');
+
+    // 1. polovina: [pevný, náhodný, náhodný] – hlídáme švy, ať na sebe nenavazují stejní umělci
+    var r1 = buildRandomBatch(fixedLast);
+    var r2 = buildRandomBatch(r1._lastHref);
+    var guard = 0;
+    while (r2._lastHref === fixedFirst && guard++ < 6) { r2 = buildRandomBatch(r1._lastHref); }
+    var seq = [fixed, r1, r2];
     seq.slice(1).forEach(function (b) { track.appendChild(b); });
     // 2. identická polovina (klony) → bezešvý loop při translateX(-50%)
     seq.forEach(function (b) { track.appendChild(b.cloneNode(true)); });
@@ -58,7 +73,7 @@
     cursor.appendChild(label);
     document.body.appendChild(cursor);
 
-    // Zero-lag position tracking
+    // Zero-lag position tracking (left/top, ať mix-blend-difference dál blenduje s pozadím)
     document.addEventListener('mousemove', function (e) {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top  = e.clientY + 'px';
@@ -238,4 +253,78 @@ document.querySelectorAll('.events-table').forEach(function (table) {
             ticking = true;
         }
     }, { passive: true });
+})();
+
+/* ─── MOBILE NAV (hamburger + menu) ───
+   Hamburger a menu se vytvoří dynamicky (nav je duplikovaný v ~17 HTML).
+   Menu se staví z existujících odkazů v .top-nav → vždy v souladu s desktop navem.
+   Viditelnost řeší CSS media queries; na desktopu jsou prvky display:none. */
+(function () {
+    var nav = document.querySelector('.top-nav');
+    if (!nav) return;
+    var html = document.documentElement;
+
+    // Hamburger do lišty (díky space-between skončí vpravo)
+    var toggle = document.createElement('button');
+    toggle.className = 'nav-toggle';
+    toggle.type = 'button';
+    toggle.setAttribute('aria-label', 'Menu');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = '<span></span><span></span><span></span>';
+    nav.appendChild(toggle);
+
+    // Fullscreen světlé menu do <body> (mimo mix-blend header, ať se barvy neinvertují)
+    var menu = document.createElement('div');
+    menu.className = 'mobile-menu';
+
+    var list = document.createElement('nav');
+    list.className = 'mobile-menu-links';
+    nav.querySelectorAll('.nav-left a, .nav-right a').forEach(function (a) {
+        var link = document.createElement('a');
+        link.href = a.getAttribute('href');
+        link.textContent = (a.textContent || '').trim();
+        link.className = 'mobile-menu-link';
+        list.appendChild(link);
+    });
+    menu.appendChild(list);
+    document.body.appendChild(menu);
+
+    function openMenu() {
+        html.classList.add('menu-open');
+        toggle.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+        html.classList.remove('menu-open');
+        toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', function () {
+        if (html.classList.contains('menu-open')) closeMenu();
+        else openMenu();
+    });
+    list.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', closeMenu); // zavře a zároveň naviguje
+    });
+    menu.addEventListener('click', function (e) {
+        if (e.target === menu) closeMenu(); // klik na prázdné pozadí
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && html.classList.contains('menu-open')) closeMenu();
+    });
+})();
+
+/* ─── EVENTS na mobilu: klub + město na jeden řádek ───
+   Obalí .col-lokace + .col-club do .col-venue (zachová DOM pořadí), aby šly na mobilu
+   stylovat jako jeden řádek. Na desktopu má .col-venue display:contents → tabulka beze změny. */
+(function () {
+    document.querySelectorAll('.events-row').forEach(function (row) {
+        var lokace = row.querySelector('.col-lokace');
+        var club = row.querySelector('.col-club');
+        if (!lokace || !club || row.querySelector('.col-venue')) return;
+        var venue = document.createElement('div');
+        venue.className = 'col-venue';
+        lokace.parentNode.insertBefore(venue, lokace);
+        venue.appendChild(lokace);
+        venue.appendChild(club);
+    });
 })();

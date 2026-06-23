@@ -132,12 +132,12 @@
             var pl = document.getElementById('preloader');
             if (!pl) return;
             if (sessionStorage.getItem('ld_pl')) { pl.style.display = 'none'; return; }
-            var minShow = 1400, t0 = Date.now();
+            var minShow = 600, t0 = Date.now();
             function hide() {
                 var wait = Math.max(0, minShow - (Date.now() - t0));
                 setTimeout(function () {
                     pl.classList.add('is-hidden');
-                    setTimeout(function () { pl.style.display = 'none'; sessionStorage.setItem('ld_pl', '1'); }, 1300);
+                    setTimeout(function () { pl.style.display = 'none'; sessionStorage.setItem('ld_pl', '1'); }, 750);
                 }, wait);
             }
             if (document.readyState === 'complete') { hide(); } else { window.addEventListener('load', hide); }

@@ -48,17 +48,16 @@
                         <div class="team-info">
                             <h2 class="team-name">Dylan Dahan</h2>
                             <div class="team-bio">
-                                <p>je zakladatel bookingové agentury zaměřené především na rapovou scénu. 
-                                    V hudebním prostředí se pohybuje přes 6 let a aktivně se podílí na budování a propojování lidí napříč scénou. Specializuje se na booking koncertů a management umělců, se silným citem pro aktuální směr rapové kultury.</p>
+                                <p>je zakladatel bookingové agentury zaměřené především na rapovou scénu. V hudebním prostředí se pohybuje přes 6 let a aktivně se podílí na budování a propojování lidí napříč scénou. Specializuje se na booking koncertů a management umělců, se silným citem pro aktuální směr rapové kultury.</p>
                                 <p>Na svém kontě má přes 100 zorganizovaných či vyjednaných koncertů pro své umělce, čímž si vybudoval pevné jméno a silnou síť kontaktů napříč scénou.</p>
                                 <p>Začínal jako manažer rappera Lboy, se kterým dlouhodobě spolupracuje dodnes a právě tahle spolupráce ho přivedla přímo do zákulisí hudebního byznysu a dala mu reálné porozumění tomu, co umělec skutečně potřebuje. V roce 2025 působil jako booking agent v rámci Universal Music Czech Republic, kde se zaměřoval především na booking rapových interpretů.</p>
                                 <p>Live District není jen bookingová agentura, je to platforma propojující streetovou autenticitu s profesionálním hudebním byznysem. Buduje dlouhodobé příležitosti pro umělce, vytváří silná partnerství mezi scénou a značkami a zaměřuje se na strategický růst, ne jen na jednorázové koncerty.</p>
                             </div>
 
                             <div class="team-socials socials">
-                                <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-                                <a href="#" aria-label="Telefon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a>
-                                <a href="#" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
+                                <a href="https://www.instagram.com/dylan.dahan02/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+                                <a href="tel:+420733123616" aria-label="Telefon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a>
+                                <a href="mailto:dylan.dahan02@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a>
                             </div>
                         </div>
                     </div>
@@ -101,12 +100,12 @@
             var pl = document.getElementById('preloader');
             if (!pl) return;
             if (sessionStorage.getItem('ld_pl')) { pl.style.display = 'none'; return; }
-            var minShow = 1400, t0 = Date.now();
+            var minShow = 600, t0 = Date.now();
             function hide() {
                 var wait = Math.max(0, minShow - (Date.now() - t0));
                 setTimeout(function () {
                     pl.classList.add('is-hidden');
-                    setTimeout(function () { pl.style.display = 'none'; sessionStorage.setItem('ld_pl', '1'); }, 1300);
+                    setTimeout(function () { pl.style.display = 'none'; sessionStorage.setItem('ld_pl', '1'); }, 750);
                 }, wait);
             }
             if (document.readyState === 'complete') { hide(); } else { window.addEventListener('load', hide); }
