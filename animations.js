@@ -328,3 +328,24 @@ document.querySelectorAll('.events-table').forEach(function (table) {
         venue.appendChild(club);
     });
 })();
+
+/* ─── FORMULÁŘ → ODESLAT NA MAIL ───
+   Statický web bez backendu → po odeslání poskládáme údaje a otevřeme mail klient
+   předvyplněný na booking adresu. Platí pro poptávku i formuláře na detailech umělců. */
+(function () {
+    var MAIL = 'ondrej.hladik@icloud.com';
+    document.querySelectorAll('form.inquiry-form').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var lines = [];
+            form.querySelectorAll('input, textarea').forEach(function (el) {
+                var lbl = el.id ? form.querySelector('label[for="' + el.id + '"]') : null;
+                var key = lbl ? lbl.textContent.trim() : (el.name || el.id || 'Pole');
+                lines.push(key + ': ' + (el.value.trim() || '—'));
+            });
+            window.location.href = 'mailto:' + MAIL
+                + '?subject=' + encodeURIComponent('Nezávazná poptávka — Live District')
+                + '&body=' + encodeURIComponent(lines.join('\r\n'));
+        });
+    });
+})();
