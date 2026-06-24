@@ -175,21 +175,32 @@
 
 /* ─── LENIS SMOOTH SCROLL ─── */
 (function () {
+    // Respektuj uživatele, kteří mají vypnuté animace
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     var s = document.createElement('script');
-    s.src = 'https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js';
+    s.src = 'lenis.min.js';   // lokálně (CSP povoluje jen 'self')
     s.onload = function () {
+        if (typeof Lenis === 'undefined') return;
         var lenis = new Lenis({
-            duration: 1.2,
+            duration: 1.35,                                   // delší = víc setrvačnosti
             easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 1,
-            smoothTouch: false,
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 1,
+            touchMultiplier: 1.6,
+            lerp: 0.085,                                      // nižší = plynulejší dojezd
+            syncTouch: true,                                  // setrvačnost i na dotyku/mobilu
         });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
+
+        // Zastavit scroll když je otevřené mobilní menu (CSS .lenis-stopped)
+        window.addEventListener('ld:menu-open',  function () { lenis.stop();  });
+        window.addEventListener('ld:menu-close', function () { lenis.start(); });
     };
+    s.onerror = function () { /* fallback: nativní scroll zůstává funkční */ };
     document.head.appendChild(s);
 })();
 
@@ -300,10 +311,12 @@ document.querySelectorAll('.events-table').forEach(function (table) {
     function openMenu() {
         html.classList.add('menu-open');
         toggle.setAttribute('aria-expanded', 'true');
+        window.dispatchEvent(new Event('ld:menu-open'));   // zastaví Lenis pod menu
     }
     function closeMenu() {
         html.classList.remove('menu-open');
         toggle.setAttribute('aria-expanded', 'false');
+        window.dispatchEvent(new Event('ld:menu-close'));  // obnoví Lenis
     }
 
     toggle.addEventListener('click', function () {

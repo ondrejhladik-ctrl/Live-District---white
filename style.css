@@ -1377,6 +1377,9 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
 ========================================================= */
 .preloader {
     position:fixed; inset:0; z-index:99999;
+    width:100vw;
+    height:100vh;          /* fallback pro starší prohlížeče */
+    height:100dvh;         /* dynamický viewport – pokryje display i s URL barem na mobilu */
     background: var(--bg-dark);
     display:flex; align-items:center; justify-content:center;
     transition:transform 0.7s var(--ease-preloader) 0.05s;
