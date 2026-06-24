@@ -320,7 +320,7 @@ a { color:inherit; }
 }
 
 .artists-section .section-title { margin-bottom:2.75rem; }
-.title-reveal { overflow:hidden; padding-bottom:0.375rem; }
+.title-reveal { overflow:hidden; padding-top:0.2em; margin-top:-0.2em; padding-bottom:0.375rem; }
 .title-reveal > span {
     display:block;
     transform:translateY(110%);
