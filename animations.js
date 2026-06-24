@@ -1,5 +1,13 @@
 /* Live District — shared animations */
 
+/* ─── ANTI-CLICKJACKING (pojistka, když hosting nenastaví X-Frame-Options/CSP) ─── */
+(function () {
+    if (window.top !== window.self) {
+        try { window.top.location = window.self.location; }
+        catch (e) { document.documentElement.style.display = 'none'; }
+    }
+})();
+
 /* ─── ARTIST MARQUEE: pevný první batch + náhodné navazující batche ───
    Generuje se PŘED kurzorem a crowd-partingem, aby na nově vzniklé dlaždice
    navázaly stejné interakce. Track = 2 identické poloviny → bezešvý -50% loop. */
@@ -329,28 +337,42 @@ document.querySelectorAll('.events-table').forEach(function (table) {
     });
 })();
 
-/* ─── FORMULÁŘ → ODESLAT NA MAIL ───
-   Statický web bez backendu → po odeslání poskládáme údaje a otevřeme mail klient
-   předvyplněný na booking adresu. Platí pro poptávku i formuláře na detailech umělců. */
+/* ─── FORMULÁŘ → ODESLAT NA MAIL (Web3Forms) ───
+   Statický web sám maily neposílá → odeslání řeší Web3Forms (zdarma, bez účtu). Po úspěchu → stránka Odesláno.
+   KAM CHODÍ MAILY = nastavuje se přístupovým klíčem ACCESS_KEY níže:
+     1) jdi na https://web3forms.com → zadej cílový e-mail (teď: ondrejhladik7@gmail.com) → klíč ti přijde do mailu
+     2) klíč vlož do ACCESS_KEY
+     3) až budeš chtít posílat na booking@livedistrict.eu, vyžádej klíč pro tu adresu a tady ho vyměň
+   Platí pro poptávku i formuláře na detailech umělců. */
 (function () {
-    var MAIL = 'ondrej.hladik@icloud.com';
+    var ACCESS_KEY = 'a121576d-a9b9-4a9d-8feb-2aac65e0d819';   // ← příjemce: ondrejhladik7@gmail.com (změna = nový klíč)
     document.querySelectorAll('form.inquiry-form').forEach(function (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            var lines = [];
-            form.querySelectorAll('input, textarea').forEach(function (el) {
-                var lbl = el.id ? form.querySelector('label[for="' + el.id + '"]') : null;
-                var key = lbl ? lbl.textContent.trim() : (el.name || el.id || 'Pole');
-                lines.push(key + ': ' + (el.value.trim() || '—'));
-            });
-            var mailto = 'mailto:' + MAIL
-                + '?subject=' + encodeURIComponent('Nezávazná poptávka — Live District')
-                + '&body=' + encodeURIComponent(lines.join('\r\n'));
-            // otevři mail klient (neodnaviguje stránku) a pak přejdi na potvrzení
-            var a = document.createElement('a');
-            a.href = mailto; a.style.display = 'none';
-            document.body.appendChild(a); a.click(); a.remove();
-            setTimeout(function () { window.location.href = 'odeslano.html'; }, 200);
+            if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;  // HTML5 validace
+            var btn = form.querySelector('.form-submit');
+            var orig = btn ? btn.textContent : '';
+            function reset(msg) { if (btn) { btn.disabled = false; btn.textContent = orig; } if (msg) alert(msg); }
+            if (btn) { btn.disabled = true; btn.textContent = 'Odesílám…'; }
+
+            var data = new FormData(form);
+            data.append('access_key', ACCESS_KEY);
+            data.append('subject', 'Nová poptávka — Live District');
+            data.append('from_name', 'Live District web');
+            var email = form.querySelector('#email');
+            if (email && email.value) data.append('replyto', email.value);   // odpověď půjde rovnou poptávajícímu
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: data
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res && res.success) { window.location.href = 'odeslano.html'; }
+                else { reset('Odeslání se nezdařilo. Zkuste to prosím znovu, nebo nás kontaktujte na booking@livedistrict.eu.'); }
+            })
+            .catch(function () { reset('Odeslání se nezdařilo. Zkontrolujte připojení a zkuste to prosím znovu.'); });
         });
     });
 })();

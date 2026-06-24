@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://api.web3forms.com; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Live District — Nezávazná poptávka</title>
     <link rel="stylesheet" href="style.css">
     <script src="animations.js" defer></script>
@@ -45,49 +47,49 @@
                     <div class="field">
                         <label for="typ">Typ akce</label>
                         <div class="input-wrap">
-                            <input type="text" id="typ" name="typ_akce" placeholder="Koncert, festival, soukromá akce…">
+                            <input type="text" id="typ" name="typ_akce" maxlength="120" placeholder="Koncert, festival, soukromá akce…">
                         </div>
                     </div>
                     <div class="field">
                         <label for="umelec">Vybraný umělec / umělci</label>
                         <div class="input-wrap">
-                            <input type="text" id="umelec" name="umelec" placeholder="Jméno umělce">
+                            <input type="text" id="umelec" name="umelec" required maxlength="120" placeholder="Jméno umělce">
                         </div>
                     </div>
                     <div class="field">
                         <label for="misto">Místo konání</label>
                         <div class="input-wrap">
-                            <input type="text" id="misto" name="misto" placeholder="Město a název klubu">
+                            <input type="text" id="misto" name="misto" maxlength="160" placeholder="Město a název klubu">
                         </div>
                     </div>
                     <div class="field">
                         <label for="termin">Preferovaný termín</label>
                         <div class="input-wrap">
-                            <input type="text" id="termin" name="termin" placeholder="DD. MM. YYYY">
+                            <input type="text" id="termin" name="termin" maxlength="60" placeholder="DD. MM. YYYY">
                         </div>
                     </div>
                     <div class="field">
                         <label for="osoba">Kontaktní osoba</label>
                         <div class="input-wrap">
-                            <input type="text" id="osoba" name="osoba" placeholder="Jméno a příjmení">
+                            <input type="text" id="osoba" name="osoba" required maxlength="120" autocomplete="name" placeholder="Jméno a příjmení">
                         </div>
                     </div>
                     <div class="field">
                         <label for="email">Email</label>
                         <div class="input-wrap">
-                            <input type="email" id="email" name="email" placeholder="vás@email.cz">
+                            <input type="email" id="email" name="email" required maxlength="160" autocomplete="email" placeholder="vás@email.cz">
                         </div>
                     </div>
                     <div class="field">
                         <label for="telefon">Telefon</label>
                         <div class="input-wrap">
-                            <input type="tel" id="telefon" name="telefon" placeholder="+420 000 000 000">
+                            <input type="tel" id="telefon" name="telefon" maxlength="40" inputmode="tel" autocomplete="tel" placeholder="+420 000 000 000">
                         </div>
                     </div>
                     <div class="field">
                         <label for="detail">Detail poptávky</label>
                         <div class="input-wrap">
-                            <textarea id="detail" name="detail" placeholder="Blížší informace o akci, počet hostů, technické zázemí…"></textarea>
+                            <textarea id="detail" name="detail" maxlength="3000" placeholder="Blížší informace o akci, počet hostů, technické zázemí…"></textarea>
                         </div>
                     </div>
                     <button type="submit" class="form-submit">Odeslat</button>
