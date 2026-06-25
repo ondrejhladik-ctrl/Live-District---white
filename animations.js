@@ -382,7 +382,7 @@ document.querySelectorAll('.events-table').forEach(function (table) {
             })
             .then(function (r) { return r.json(); })
             .then(function (res) {
-                if (res && res.success) { window.location.href = 'odeslano.html'; }
+                if (res && res.success) { window.location.href = 'odeslano'; }
                 else { reset('Odeslání se nezdařilo. Zkuste to prosím znovu, nebo nás kontaktujte na booking@livedistrict.eu.'); }
             })
             .catch(function () { reset('Odeslání se nezdařilo. Zkontrolujte připojení a zkuste to prosím znovu.'); });
