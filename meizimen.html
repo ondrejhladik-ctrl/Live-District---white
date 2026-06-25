@@ -172,10 +172,34 @@
 
     <script>
         document.documentElement.classList.add('js');
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-        }, { threshold: 0.12 });
-        document.querySelectorAll('.reveal, .title-reveal').forEach(el => io.observe(el));
+        (function () {
+            var els = Array.prototype.slice.call(document.querySelectorAll('.reveal, .title-reveal'));
+            function show(el) { el.classList.add('in'); }
+
+            // Cokoliv, co je při načtení už ve viewportu nebo nad ním, odhal HNED
+            // (jinak by velký reveal-blok na vrcholu stránky zůstal skrytý = bílá plocha).
+            function revealInView() {
+                var vh = window.innerHeight || document.documentElement.clientHeight;
+                els.forEach(function (el) {
+                    if (el.classList.contains('in')) return;
+                    var r = el.getBoundingClientRect();
+                    if (r.top < vh * 0.9) show(el);   // horní hrana je (skoro) ve viewportu
+                });
+            }
+
+            if (!('IntersectionObserver' in window)) {
+                els.forEach(show);   // starý prohlížeč – ukaž vše
+            } else {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) { show(e.target); io.unobserve(e.target); }
+                    });
+                }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+                els.forEach(function (el) { io.observe(el); });
+                revealInView();                                 // hned po startu
+                window.addEventListener('load', revealInView);  // po načtení (preloader pryč)
+            }
+        })();
     </script>
 </body>
 </html>
