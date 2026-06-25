@@ -1,8 +1,8 @@
 /* ---------- FONTY ---------- */
-@font-face { font-family:'HelveticaExtended'; src:url('HelveticaNeueLTProBdEx.otf'); font-weight:normal; font-style:normal; }
-@font-face { font-family:'HelveticaLight';    src:url('HelveticaNeueLTProLt.otf');   font-weight:normal; font-style:normal; }
-@font-face { font-family:'HelveticaBold';     src:url('HelveticaNeueLTProBd.otf');   font-weight:normal; font-style:normal; }
-@font-face { font-family:'HelveticaExtended53'; src:url('HelveticaNeueLTProEx.otf'); font-weight:normal; font-style:normal; }
+@font-face { font-family:'HelveticaExtended'; src:url('HelveticaNeueLTProBdEx.otf'); font-weight:normal; font-style:normal; font-display:swap; }
+@font-face { font-family:'HelveticaLight';    src:url('HelveticaNeueLTProLt.otf');   font-weight:normal; font-style:normal; font-display:swap; }
+@font-face { font-family:'HelveticaBold';     src:url('HelveticaNeueLTProBd.otf');   font-weight:normal; font-style:normal; font-display:swap; }
+@font-face { font-family:'HelveticaExtended53'; src:url('HelveticaNeueLTProEx.otf'); font-weight:normal; font-style:normal; font-display:swap; }
 
 /* =========================================================
    PROMĚNNÉ (Custom Properties)
@@ -686,7 +686,11 @@ body.subpage:not(.artist-page) .page-main { padding-top:5.625rem; }
     font-size: clamp(1.75rem, 3.5vw, 2.875rem);
     line-height:1.18;   /* prostor pro háčky/čárky (NAŠI UMĚLCI) */
     letter-spacing:-0.02em;
-    text-align:center; margin:2.5rem 0 5.625rem 0; text-transform:uppercase;
+    /* padding-top dává prostor diakritice i v kompozitní vrstvě, kterou vytvoří
+       reveal transform (iOS jinak vršek písmen ořízne do prvního scrollu).
+       margin-top je o stejně menší, takže rozložení zůstává stejné. */
+    padding-top:0.35em;
+    text-align:center; margin:2.15em 0 5.625rem 0; text-transform:uppercase;
 }
 .gallery-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:2.875rem; }
 
