@@ -193,10 +193,17 @@ a { color:inherit; }
                 opacity 0.45s var(--ease-spring),
                 transform 0.5s var(--ease-spring);
 }
-.logo { width:13.125rem; height:auto; }
+.logo { width:13.125rem; height:auto; transition: filter 0.45s var(--ease-out); }
 
 /* Restore interactivity for all links inside the pointer-events:none nav containers */
 .top-nav a { pointer-events: auto; }
+
+/* Subpage (umělci, tým, eventy, poptávka…) mají SVĚTLÉ pozadí nahoře → logo a nav
+   tmavé hned od začátku (žádný blend mode, žádné probliknutí). Výjimka: artist-page
+   má tmavé hero foto, tak tam zůstává bílé (řeší se níže přes is-scrolled). */
+body.subpage:not(.artist-page) .nav-link { color: var(--ink); }
+body.subpage:not(.artist-page) .logo { filter: brightness(0); }
+body.subpage:not(.artist-page) .nav-link::after { background: var(--ink); }
 
 .nav-link {
     font-family: var(--font-extended);
@@ -631,8 +638,9 @@ body.gallery-page {
 .subpage-header {
     position:fixed; top:0; left:0; right:0; z-index:1000;
     background: transparent;
-    mix-blend-mode: difference;
     pointer-events: none;
+    /* mix-blend-mode:difference odebrán – na mobilu způsoboval sekání a černé probliknutí.
+       Barvy loga/navigace řešíme explicitně podle typu stránky (níže). */
 }
 .page-main { flex:1 0 auto; width:100%; position:relative; z-index:2; }
 body.subpage:not(.artist-page) .page-main { padding-top:5.625rem; }
@@ -1005,8 +1013,8 @@ body.poptavka-page .field textarea:focus { box-shadow:none; }
 .artist-page .top-nav {
     position:fixed; top:0; left:0; right:0; width:100%; z-index:1000;
     background: transparent;
-    mix-blend-mode: difference;
     pointer-events: none;
+    /* mix-blend-mode odebrán (sekání na mobilu) – barvy řešíme explicitně */
 }
 
 .artist-hero-photo { position:absolute; inset:0; }
@@ -1416,8 +1424,7 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
 .artist-page .top-nav {
     transition: background 0.45s var(--ease-out),
                 backdrop-filter 0.45s var(--ease-out),
-                -webkit-backdrop-filter 0.45s var(--ease-out),
-                mix-blend-mode 0s;
+                -webkit-backdrop-filter 0.45s var(--ease-out);
 }
 
 /* .subpage-header je už full-width (left:0;right:0), pozadí stačí přímo na něm */
@@ -1426,10 +1433,6 @@ html.is-scrolled .subpage-header {
     backdrop-filter: blur(0.875rem);
     -webkit-backdrop-filter: blur(0.875rem);
     border-bottom: 0.0625rem solid var(--border-mid);
-}
-html.is-scrolled .subpage-header,
-html.is-scrolled .artist-page .top-nav {
-    mix-blend-mode: normal;
 }
 
 /* Artist nav je max-width vycentrovaný – plné pozadí přes ::before na 100vw,
@@ -1519,6 +1522,10 @@ html.is-scrolled .artist-page .top-nav .nav-link::after {
     .nav-toggle span:nth-child(3) { bottom: 0; }
     /* po odscrollování (světlá glass lišta, mix-blend:normal) → tmavé čárky */
     html.is-scrolled .nav-toggle span { background: var(--ink); }
+    /* Subpage má světlé pozadí → hamburger tmavý hned (bez blend mode by byl bílý na bílém). */
+    body.subpage:not(.artist-page) .nav-toggle span { background: var(--ink); }
+    /* Otevřené menu = bílý overlay → křížek vždy tmavý, ať je vidět. */
+    html.menu-open .nav-toggle span { background: var(--ink); }
     /* po kliknutí: hamburger → křížek (stejné čáry, postupná animace) */
     html.menu-open .nav-toggle span:nth-child(1) { transform: translateY(0.4375rem) rotate(45deg); }
     html.menu-open .nav-toggle span:nth-child(2) { opacity: 0; }
@@ -1533,13 +1540,23 @@ html.is-scrolled .artist-page .top-nav .nav-link::after {
         position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100000;
         width: 100vw;
         height: 100vh;          /* fallback */
-        height: 100dvh;         /* dynamický viewport – pokryje display i s lištou prohlížeče */
+        height: 100lvh;         /* LARGE viewport – vždy max výška, pokryje display i když je lišta schovaná */
+        /* JS navíc nastaví --vh = window.innerHeight (reálná výška včetně oblasti za lištou) */
+        height: var(--menu-h, 100lvh);
         background: #ffffff;
         opacity: 0; visibility: hidden;
         transition: opacity 0.4s var(--ease-out), visibility 0.4s var(--ease-out);
     }
     html.menu-open .mobile-menu { opacity: 1; visibility: visible; }
-    html.menu-open, html.menu-open body { overflow: hidden; }   /* scroll-lock */
+    /* Scroll-lock na iOS: fixní body (samotné overflow:hidden iOS Safari ignoruje).
+       JS doplní top: -scrollY, aby stránka nepodskočila. */
+    html.menu-open { overflow: hidden; }
+    html.menu-open body {
+        overflow: hidden;
+        position: fixed;
+        left: 0; right: 0;
+        width: 100%;
+    }
 
     .mobile-menu-links {
         display: flex; flex-direction: column; align-items: center; gap: 1.875rem;

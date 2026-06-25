@@ -308,13 +308,34 @@ document.querySelectorAll('.events-table').forEach(function (table) {
     menu.appendChild(list);
     document.body.appendChild(menu);
 
+    // Reálná výška displeje pro fullscreen menu (iOS lišta mění viewport).
+    // Bereme největší známou výšku, aby menu vždy pokrylo celý display bez prosvítání.
+    function setMenuHeight() {
+        var vv = window.visualViewport;
+        var h = Math.max(
+            window.innerHeight || 0,
+            document.documentElement.clientHeight || 0,
+            vv ? vv.height : 0
+        );
+        html.style.setProperty('--menu-h', h + 'px');
+    }
+    setMenuHeight();
+    window.addEventListener('resize', setMenuHeight);
+    window.addEventListener('orientationchange', setMenuHeight);
+
+    var savedScrollY = 0;
     function openMenu() {
-        html.classList.add('menu-open');
-        toggle.setAttribute('aria-expanded', 'true');
+        setMenuHeight();                                   // přepočítej těsně před otevřením
+        savedScrollY = window.scrollY || window.pageYOffset || 0;
         window.dispatchEvent(new Event('ld:menu-open'));   // zastaví Lenis pod menu
+        html.classList.add('menu-open');
+        document.body.style.top = (-savedScrollY) + 'px';  // drž vizuální pozici (fixní body)
+        toggle.setAttribute('aria-expanded', 'true');
     }
     function closeMenu() {
         html.classList.remove('menu-open');
+        document.body.style.top = '';
+        window.scrollTo(0, savedScrollY);                  // vrať scroll na původní místo
         toggle.setAttribute('aria-expanded', 'false');
         window.dispatchEvent(new Event('ld:menu-close'));  // obnoví Lenis
     }
