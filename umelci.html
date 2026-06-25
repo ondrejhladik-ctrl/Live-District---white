@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
+    /* JS je k dispozici – nastav třídu co nejdřív (v <head>), aby se reveal-prvky
+       schovaly hned a neproblikly před spuštěním reveal animace. */
+    document.documentElement.classList.add('js');
     /* ADAPTIVNÍ KVALITA FOTEK PODLE RYCHLOSTI SÍTĚ.
        Běží v <head> ještě PŘED načtením obrázků. Na pomalém připojení zmenší
        deklarované `sizes` u <source>, takže si prohlížeč vybere menší WebP variantu
@@ -317,7 +320,6 @@
         })();
     </script>
     <script>
-        document.documentElement.classList.add('js');
         (function () {
             var els = Array.prototype.slice.call(document.querySelectorAll('.reveal, .title-reveal'));
             function show(el) { el.classList.add('in'); }
