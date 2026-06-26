@@ -96,12 +96,39 @@
             (function () {
                 var v = document.getElementById('hero-video');
                 if (!v) return;
+
+                // iOS spolehlivost: muted/inline nastavit i jako vlastnosti, ne jen atributy.
+                v.muted = true; v.defaultMuted = true;
+                v.setAttribute('muted', '');
+                v.playsInline = true;
+
                 var mobile = window.matchMedia('(max-width:768px)').matches;
                 var s = document.createElement('source');
                 s.src = mobile ? 'headervideo-mobile.mp4' : 'headervideo-desktop.mp4';
                 s.type = 'video/mp4';
                 v.appendChild(s);
                 v.load();
+
+                function tryPlay() {
+                    var p = v.play();
+                    if (p && p.catch) p.catch(function () {});
+                }
+                tryPlay();
+
+                // Fallback: když autoplay blokne prohlížeč (typicky úsporný režim na iOS),
+                // rozjedeme video při PRVNÍM gestu uživatele (dotyk / klik / scroll).
+                function kick() {
+                    tryPlay();
+                    if (!v.paused) cleanup();
+                }
+                function cleanup() {
+                    ['touchstart', 'click', 'scroll', 'pointerdown'].forEach(function (ev) {
+                        window.removeEventListener(ev, kick);
+                    });
+                }
+                ['touchstart', 'click', 'scroll', 'pointerdown'].forEach(function (ev) {
+                    window.addEventListener(ev, kick, { passive: true });
+                });
             })();
             </script>
             <div class="css-overlay-dark"></div>
@@ -302,6 +329,8 @@
                     (function () {
                         var v = document.getElementById('about-video');
                         if (!v) return;
+                        v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+                        v.playsInline = true;
                         var mobile = window.matchMedia('(max-width:768px)').matches;
                         var src = mobile ? 'videos/live-district-mobile.mp4' : 'videos/live-district-desktop.mp4';
                         function load() {
@@ -310,6 +339,7 @@
                             var s = document.createElement('source');
                             s.src = src; s.type = 'video/mp4';
                             v.appendChild(s); v.load();
+                            var p = v.play(); if (p && p.catch) p.catch(function () {});
                         }
                         if ('IntersectionObserver' in window) {
                             var io = new IntersectionObserver(function (e) {
