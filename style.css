@@ -176,14 +176,16 @@ a { color:inherit; }
 
 /* ---------- NAVIGACE ---------- */
 .top-nav {
-    display:flex; justify-content:space-between; align-items:center;
+    /* Grid 1fr auto 1fr: krajní sloupce jsou VŽDY stejně široké → logo přesně uprostřed
+       (flex:1 sem tam dával drobný posun). */
+    display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center;
     width:100%;
     max-width:calc(var(--content-max) + var(--container-pad) * 2);
     margin-left:auto; margin-right:auto;
     padding: 1.5rem var(--container-pad);
     transition: padding 0.5s var(--ease-spring);
 }
-.nav-left, .nav-right { display:flex; align-items:center; gap:clamp(1.5rem, 3.5vw, 6.25rem); flex:1; min-width:0; }
+.nav-left, .nav-right { display:flex; align-items:center; gap:clamp(1.5rem, 3.5vw, 6.25rem); min-width:0; }
 /* Obě skupiny vycentrované ve své polovině → symetrické rozložení kolem loga
    (jinak levá skupina se širším obsahem lepí blíž k logu než pravá). */
 .nav-left { justify-content:center; }
@@ -1536,8 +1538,9 @@ html.is-scrolled .artist-page .top-nav .nav-link::after {
 .nav-toggle, .mobile-menu { display: none; }
 
 @media (max-width: 1024px) {
-    /* Lišta: malé logo vlevo + hamburger vpravo; řádkové odkazy pryč */
-    .top-nav { flex-wrap: nowrap; gap: 0; }
+    /* Lišta: malé logo vlevo + hamburger vpravo; řádkové odkazy pryč.
+       Zpět na flex (desktop má grid 1fr auto 1fr pro centrované logo). */
+    .top-nav { display: flex; justify-content: space-between; flex-wrap: nowrap; gap: 0; }
     .nav-left, .nav-right { display: none; }
     .nav-center {
         display: flex; justify-content: flex-start;
