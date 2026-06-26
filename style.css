@@ -184,7 +184,10 @@ a { color:inherit; }
     transition: padding 0.5s var(--ease-spring);
 }
 .nav-left, .nav-right { display:flex; align-items:center; gap:clamp(1.5rem, 3.5vw, 6.25rem); flex:1; min-width:0; }
-.nav-right { justify-content:flex-end; }
+/* Obě skupiny vycentrované ve své polovině → symetrické rozložení kolem loga
+   (jinak levá skupina se širším obsahem lepí blíž k logu než pravá). */
+.nav-left { justify-content:center; }
+.nav-right { justify-content:center; }
 .nav-center {
     display:flex; justify-content:center; flex:0 0 auto;
     min-width:0; overflow:hidden;
