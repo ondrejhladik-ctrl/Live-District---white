@@ -188,12 +188,16 @@ a { color:inherit; }
 .nav-center {
     display:flex; justify-content:center; flex:0 0 auto;
     min-width:0; overflow:hidden;
-    max-width:15rem; opacity:1; transform:translateY(0);
+    /* padding = dýchací prostor kolem loga, ať na něj boční odkazy nelepí.
+       Při scrollu se spolu s max-width:0 zkolabuje (overflow:hidden). */
+    padding:0 clamp(1.5rem, 3vw, 3.25rem);
+    max-width:20rem; opacity:1; transform:translateY(0);
     transition: max-width 0.5s var(--ease-spring),
+                padding 0.5s var(--ease-spring),
                 opacity 0.45s var(--ease-spring),
                 transform 0.5s var(--ease-spring);
 }
-.logo { width:13.125rem; height:auto; transition: filter 0.45s var(--ease-out); }
+.logo { width:12rem; height:auto; transition: filter 0.45s var(--ease-out); }
 
 /* Restore interactivity for all links inside the pointer-events:none nav containers */
 .top-nav a { pointer-events: auto; }
@@ -1498,6 +1502,7 @@ html.is-scrolled .artist-page .top-nav {
 
 html.is-scrolled .nav-center {
     max-width: 0;
+    padding-left: 0; padding-right: 0;   /* ať se logo i s dýchacím prostorem zkolabuje úplně */
     opacity: 0;
     transform: translateY(-0.75rem);
     pointer-events: none;
@@ -1520,25 +1525,26 @@ html.is-scrolled .artist-page .top-nav .nav-link::after {
 #eventy, #o-agenture, #kontakt { scroll-margin-top: 5rem; }
 
 /* =========================================================
-   MOBILNÍ HLAVIČKA — hamburger + menu (≤1000px; nad tím plný desktop nav).
-   Breakpoint 1000px, aby řádkový nav nezůstal viset v rozpadlém stavu na úzkém
+   MOBILNÍ HLAVIČKA — hamburger + menu (≤1024px; nad tím plný desktop nav).
+   Breakpoint 1024px, aby řádkový nav nezůstal viset v rozpadlém stavu na úzkém
    desktopu/tabletu (kolidující odkazy, zalomené „NEZÁVAZNÁ POPTÁVKA").
    .nav-toggle a .mobile-menu se vytvářejí v JS (animations.js); na desktopu skryté.
 ========================================================= */
 .nav-toggle, .mobile-menu { display: none; }
 
-@media (max-width: 1000px) {
+@media (max-width: 1024px) {
     /* Lišta: malé logo vlevo + hamburger vpravo; řádkové odkazy pryč */
     .top-nav { flex-wrap: nowrap; gap: 0; }
     .nav-left, .nav-right { display: none; }
     .nav-center {
         display: flex; justify-content: flex-start;
         flex: 0 0 auto; max-width: none; overflow: visible;
+        padding: 0;   /* na mobilu logo vlevo bez dýchacího paddingu */
     }
     .nav-center .logo { width: 7.5rem; }
     /* mobilní logo zůstává viditelné i po odscrollování (přebíjí desktop collapse) */
     html.is-scrolled .nav-center {
-        max-width: none; opacity: 1; transform: none; pointer-events: auto;
+        max-width: none; padding: 0; opacity: 1; transform: none; pointer-events: auto;
     }
 
     /* Hamburger */
