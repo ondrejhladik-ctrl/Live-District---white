@@ -1342,12 +1342,29 @@ body.artist-page .artist-bio + section {     /* první sekce (release/poptávka)
 @media (hover:none) {
     .custom-cursor { display:none; }
     *, *::before, *::after { cursor:auto; }
-    /* Na dotykových zařízeních se :hover „zasekává" → karty by zůstaly ztmavené.
-       Vypínáme dimming/focus efekt galerie i karuselu. */
+    /* Na dotykových zařízeních se :hover „zasekává" → efekt by zůstal viset po ťuknutí.
+       Vypínáme VŠECHNY hover efekty karet (dimming, zvětšení fotky, rámeček, barvu). */
     .gallery-grid:has(.gallery-card:hover) .gallery-card:not(:hover),
-    .carousel-track:has(.artist-card:hover) .artist-card:not(:hover) {
+    .carousel-track:has(.artist-card:hover) .artist-card:not(:hover),
+    .bento-track:has(.bento-item:hover) .bento-item:not(:hover) {
         opacity:1;
     }
+    .gallery-card:hover .photo,
+    .gallery-card:hover a[href="lboy.html"] .photo,
+    .gallery-card:hover a[href="erne100.html"] .photo,
+    .artist-card:hover .artist-photo,
+    .artist-card[href="lboy.html"]:hover .artist-photo,
+    .artist-card[href="erne100.html"]:hover .artist-photo {
+        transform:none;
+    }
+    .gallery-card:hover,
+    .artist-card:hover { border-color: var(--border-subtle); }
+    .gallery-card:hover .card-name { color: var(--ink); }
+    .artist-card:hover .artist-arrow { transform:none; }
+    .bento-item:hover { transform:none; }
+    .gallery-card:hover::before,
+    .artist-card:hover::before,
+    .bento-item:hover::before { opacity:0; }
 }
 
 /* Scroll progress bar */

@@ -88,9 +88,22 @@
 
     <header class="hero-section">
         <div class="hero-bg">
-            <video autoplay loop muted playsinline poster="Lboy OX praha napoleon-headervideo.png">
-                <source src="headervideo.mp4" type="video/mp4">
-            </video>
+            <video id="hero-video" autoplay loop muted playsinline preload="auto"
+                   poster="Lboy OX praha napoleon-headervideo.png"></video>
+            <script>
+            /* Vybere lehčí video pro mobil (smooth, ~5,7 MB) a kvalitnější pro desktop (~15 MB).
+               JS místo <source media> kvůli iOS Safari, který media atribut u videa ignoruje. */
+            (function () {
+                var v = document.getElementById('hero-video');
+                if (!v) return;
+                var mobile = window.matchMedia('(max-width:768px)').matches;
+                var s = document.createElement('source');
+                s.src = mobile ? 'headervideo-mobile.mp4' : 'headervideo-desktop.mp4';
+                s.type = 'video/mp4';
+                v.appendChild(s);
+                v.load();
+            })();
+            </script>
             <div class="css-overlay-dark"></div>
             <div class="css-overlay-fade"></div>
         </div>
@@ -282,9 +295,30 @@
                     <p>Spolupracujeme s interprety i pořadateli a klademe důraz na kvalitu, spolehlivost a dlouhodobé vztahy.</p>
                 </div>
                 <div class="about-visual">
-                    <video class="about-video" autoplay muted loop playsinline>
-                        <source src="videos/live-district.mp4" type="video/mp4">
-                    </video>
+                    <video id="about-video" class="about-video" autoplay muted loop playsinline preload="none"></video>
+                    <script>
+                    /* Lazy: about video se načte (a vybere mobil/desktop verzi) až když k němu
+                       doscrolluješ – nezatěžuje úvodní načtení stránky. */
+                    (function () {
+                        var v = document.getElementById('about-video');
+                        if (!v) return;
+                        var mobile = window.matchMedia('(max-width:768px)').matches;
+                        var src = mobile ? 'videos/live-district-mobile.mp4' : 'videos/live-district-desktop.mp4';
+                        function load() {
+                            if (v.dataset.loaded) return;
+                            v.dataset.loaded = '1';
+                            var s = document.createElement('source');
+                            s.src = src; s.type = 'video/mp4';
+                            v.appendChild(s); v.load();
+                        }
+                        if ('IntersectionObserver' in window) {
+                            var io = new IntersectionObserver(function (e) {
+                                if (e[0].isIntersecting) { load(); io.disconnect(); }
+                            }, { rootMargin: '200px' });
+                            io.observe(v);
+                        } else { load(); }
+                    })();
+                    </script>
                 </div>
             </div>
         </div>
