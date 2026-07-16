@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* JS je k dispozici – nastav třídu co nejdřív (v <head>), aby se reveal-prvky
+       schovaly hned a neproblikly před spuštěním reveal animace. */
+    document.documentElement.classList.add('js');
+    /* ADAPTIVNÍ KVALITA FOTEK PODLE RYCHLOSTI SÍTĚ.
+       Běží v <head> ještě PŘED načtením obrázků. Na pomalém připojení zmenší
+       deklarované `sizes` u <source>, takže si prohlížeč vybere menší WebP variantu
+       (méně dat = plynulejší web). Na rychlém připojení nedělá nic = plná kvalita. */
+    (function () {
+      try {
+        var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!c) return;
+        var slow = c.saveData === true
+          || /(^|-)(slow-2g|2g|3g)$/.test(c.effectiveType || '')
+          || (typeof c.downlink === 'number' && c.downlink > 0 && c.downlink < 1.5);
+        if (!slow) return;
+        document.documentElement.classList.add('net-slow');
+
+        // Zmenši cílovou šířku => prohlížeč sáhne po menší variantě ze srcset.
+        // 60vw ořízne zbytečně velké zdroje, aniž by fotka byla rozmazaná.
+        // Strop šířky pro výběr zdroje. Nikdy nezvětšuje (menší fotka v plné šířce
+        // displeje stačí – na pomalé síti je úspora dat důležitější než ostrost na retině).
+        // Mobil: 70vw, tablet: 45vw, desktop: 33vw – vždy ≤ původním hodnotám.
+        var SLOW_SIZES = '(max-width:768px) 70vw, (max-width:1100px) 45vw, 33vw';
+        function shrink(src) {
+          if (src && src.tagName === 'SOURCE' && !src.dataset.netDone) {
+            src.dataset.netDone = '1';
+            src.setAttribute('sizes', SLOW_SIZES);
+          }
+        }
+        // Existující <source> (kdyby head dorazil pozdě) + budoucí (parsované za tímto skriptem).
+        var mo = new MutationObserver(function (muts) {
+          muts.forEach(function (m) {
+            m.addedNodes.forEach(function (n) {
+              if (n.nodeType !== 1) return;
+              if (n.tagName === 'SOURCE') shrink(n);
+              else if (n.querySelectorAll) n.querySelectorAll('source').forEach(shrink);
+            });
+          });
+        });
+        mo.observe(document.documentElement, { childList: true, subtree: true });
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('picture source').forEach(shrink);
+          mo.disconnect();
+        });
+      } catch (e) {}
+    })();
+    </script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://api.web3forms.com; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Live District — NIKDEVIL</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="canonical" href="https://livedistrict.cz/nikdevil">
+    <link rel="preload" href="HelveticaNeueLTProBdEx.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="HelveticaNeueLTProBd.otf" as="font" type="font/otf" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="animations.js" defer></script>
+</head>
+<body class="subpage artist-page">
+
+    <nav class="top-nav">
+            <div class="nav-left">
+                <a href="poptavka" class="nav-link">NEZÁVAZNÁ POPTÁVKA</a>
+                <a href="eventy" class="nav-link">EVENTY</a>
+            </div>
+            <div class="nav-center">
+                <a href="/"><img src="logo dirtict.svg" alt="Live District Logo" class="logo"></a>
+            </div>
+            <div class="nav-right">
+                <a href="umelci" class="nav-link">UMĚLCI</a>
+                <a href="tym" class="nav-link">TÝM</a>
+                <a href="tym" class="nav-link">KONTAKT</a>
+            </div>
+        </nav>
+
+    <header class="artist-hero">
+
+        <div class="artist-hero-photo">
+                        <picture>
+                            <source type="image/webp" srcset="images/hero/nikdevil-sm.webp 768w, images/hero/nikdevil-md.webp 1280w, images/hero/nikdevil-lg.webp 1920w" sizes="100vw">
+                            <img src="images/large/nikdevil.jpg" alt="NIKDEVIL" fetchpriority="high" decoding="async" style="object-position:center 30%">
+                        </picture>
+        </div>
+        <div class="artist-hero-overlay"></div>
+        <div class="artist-hero-name">
+            <span>NIKDEVIL</span>
+        </div>
+    </header>
+
+    <main class="page-main">
+
+        <section class="artist-bio">
+            <div class="container">
+                <p class="reveal">Nikdevil je rapový umělec z Ústeckého kraje, jehož tvorba stojí na autenticitě, moderním zvuku a osobních příbězích. Inspiraci hledá ve vlastním životě a každým releasem rozvíjí svůj charakteristický styl. Mezi jeho nejvýraznější skladby patří „Stačí mi rok“, která představuje důležitý bod jeho dosavadní kariéry.</p>
+
+                <div class="socials socials-lg reveal">
+                    <a href="https://open.spotify.com/artist/4FdMWc7kQjxi5gwv6Y8dL3" aria-label="Spotify"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4a.6.6 0 0 1-.86.2c-2.35-1.43-5.3-1.76-8.8-.96a.62.62 0 1 1-.27-1.2c3.83-.88 7.1-.5 9.73 1.1.3.18.39.57.2.86zm1.23-2.74a.78.78 0 0 1-1.07.26c-2.7-1.66-6.8-2.14-9.98-1.17a.78.78 0 1 1-.45-1.49c3.64-1.1 8.16-.57 11.25 1.33.36.22.48.7.25 1.07zm.1-2.85C14.8 8.94 9.3 8.75 6.16 9.7a.93.93 0 1 1-.54-1.78C9.22 6.83 15.3 7.05 18.86 9.16a.93.93 0 1 1-.95 1.6z"/></svg></a>
+                    <a href="https://www.youtube.com/watch?v=fMbZZw5AEUU" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
+                    <!-- TODO: Instagram + TikTok – doplnit po ověření. Kandidát IG: https://www.instagram.com/rap__devil/ (nepotvrzeno) -->
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <div class="container">
+                <div class="form-intro reveal">
+                    <h2>Nezávazná poptávka</h2>
+                    <p>Zašlete nám svou poptávku a my se vám ozveme s informacemi o dostupnosti a podmínkách vystoupení.</p>
+                </div>
+
+                <form class="inquiry-form" action="#" method="post">
+                    <div class="field"><label for="typ">Typ akce</label><input type="text" id="typ" name="typ_akce" placeholder="Koncert, festival, soukromá akce…"></div>
+                    <div class="field"><label for="umelec">Vybraný umělec / umělci</label><input type="text" id="umelec" name="umelec" value="NIKDEVIL"></div>
+                    <div class="field"><label for="misto">Místo konání</label><input type="text" id="misto" name="misto" placeholder="Město a název klubu"></div>
+                    <div class="field"><label for="termin">Preferovaný termín</label><input type="text" id="termin" name="termin" placeholder="DD. MM. YYYY"></div>
+                    <div class="field"><label for="osoba">Kontaktní osoba</label><input type="text" id="osoba" name="osoba" placeholder="Jméno a příjmení"></div>
+                    <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" placeholder="vás@email.cz"></div>
+                    <div class="field"><label for="telefon">Telefon</label><input type="tel" id="telefon" name="telefon" placeholder="+420 000 000 000"></div>
+                    <div class="field"><label for="detail">Detail poptávky</label><textarea id="detail" name="detail" placeholder="Blížší informace o akci, počet hostů, technické zázemí…"></textarea></div>
+                    <button type="submit" class="form-submit">Odeslat</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="events-section">
+            <div class="container">
+                <h2 class="section-title title-reveal"><span>EVENTY</span></h2>
+
+                <div class="events-empty" aria-hidden="true"></div>
+            </div>
+        </section>
+    </main>
+
+            <footer class="site-footer" id="kontakt">
+        <div class="footer-top">
+            <a href="/" class="footer-logo">
+                <img src="logo dirtict.svg" alt="Live District">
+            </a>
+            <nav class="footer-nav">
+                <a href="eventy">EVENTY</a>
+                <a href="umelci">UMĚLCI</a>
+                <a href="poptavka">NEZ&Aacute;VAZN&Aacute;&nbsp;POPT&Aacute;VKA</a>
+                <a href="tym">T&Yacute;M</a>
+            </nav>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <span>&#169;2026 LIVE DISTRICT</span>
+                <span class="separator">&#8226;</span>
+                <span>Booking a management současných umělců.</span>
+            </div>
+            <div class="footer-bottom-right">
+                <a href="mailto:booking@livedistrict.eu">booking@livedistrict.eu</a>
+                <span class="separator">&#8226;</span>
+                <span>IČO: 01744933</span>
+                <span class="separator">&#8226;</span>
+                <a href="ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var els = Array.prototype.slice.call(document.querySelectorAll('.reveal, .title-reveal'));
+            function show(el) { el.classList.add('in'); }
+
+            // Cokoliv, co je při načtení už ve viewportu nebo nad ním, odhal HNED
+            // (jinak by velký reveal-blok na vrcholu stránky zůstal skrytý = bílá plocha).
+            function revealInView() {
+                var vh = window.innerHeight || document.documentElement.clientHeight;
+                els.forEach(function (el) {
+                    if (el.classList.contains('in')) return;
+                    var r = el.getBoundingClientRect();
+                    if (r.top < vh * 0.9) show(el);   // horní hrana je (skoro) ve viewportu
+                });
+            }
+
+            if (!('IntersectionObserver' in window)) {
+                els.forEach(show);   // starý prohlížeč – ukaž vše
+            } else {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) { show(e.target); io.unobserve(e.target); }
+                    });
+                }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+                els.forEach(function (el) { io.observe(el); });
+                revealInView();                                 // hned po startu
+                window.addEventListener('load', revealInView);  // po načtení (preloader pryč)
+            }
+        })();
+    </script>
+</body>
+</html>

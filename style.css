@@ -495,10 +495,11 @@ a.events-row { color: inherit; text-decoration: none; }   /* řádek = odkaz na 
 }
 /* PRVNÍ batch – pevná hierarchie dle důležitosti (dominant M = 2×3). */
 .bento-fixed {
+    grid-template-columns:repeat(9, clamp(6.75rem, 11.5vw, 10.625rem));
     grid-template-areas:
-        "M M e f a b c d"
-        "M M e f a b c d"
-        "M M e f g h i j";
+        "M M e f a b c d k"
+        "M M e f a b c d k"
+        "M M e f g h i j k";
 }
 .bento-fixed > :nth-child(1)  { grid-area:M; }   /* #1 – dominantní centrální (2×3) */
 .bento-fixed > :nth-child(2)  { grid-area:e; }   /* #2–3 – vysoké vertikály (1×3) */
@@ -511,6 +512,7 @@ a.events-row { color: inherit; text-decoration: none; }   /* řádek = odkaz na 
 .bento-fixed > :nth-child(9)  { grid-area:h; }
 .bento-fixed > :nth-child(10) { grid-area:i; }
 .bento-fixed > :nth-child(11) { grid-area:j; }
+.bento-fixed > :nth-child(12) { grid-area:k; }   /* #12 – přidaný vertikál vpravo (1×3) */
 /* NÁSLEDNÉ batche – náhodné: plní se po sloupcích, každá dlaždice span 1 (čtverec)
    nebo span 2 (vertikál); přiřazuje JS. */
 .bento-random {
