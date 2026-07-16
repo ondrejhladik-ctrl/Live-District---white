@@ -8,6 +8,47 @@
     }
 })();
 
+/* ─── EVENTY: automaticky skryj proběhlé + na homepage nech 5 nadcházejících ───
+   Datum se čte z .col-kdy ("18. 7." nebo rozsah "14–17. 7." → rozhoduje KONEC).
+   Rok v datu není → dopočítá se: kdyby datum vyšlo víc než ~6 měsíců do minulosti,
+   jde skoro jistě o příští rok. Běží při každém načtení = vždy aktuální, bez údržby.
+   Musí běžet PŘED ostatními IIFE nad .events-row (stagger, mobil, kurzor), aby ty
+   pracovaly už jen s aktuálními řádky. */
+(function () {
+    var rows = Array.prototype.slice.call(document.querySelectorAll('.events-row'));
+    if (!rows.length) return;
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var SIX_MONTHS = 183 * 24 * 60 * 60 * 1000;
+
+    function endDate(text) {
+        if (!text) return null;
+        var t = text.replace(/[‒-―]/g, '-');                 // pomlčky → '-'
+        var m = t.match(/(\d{1,2})\s*(?:-\s*(\d{1,2}))?\s*\.\s*(\d{1,2})\s*\./);
+        if (!m) return null;
+        var day = parseInt(m[2] || m[1], 10);                          // u rozsahu jeho konec
+        var month = parseInt(m[3], 10);
+        var d = new Date(today.getFullYear(), month - 1, day);
+        d.setHours(0, 0, 0, 0);
+        if (today - d > SIX_MONTHS) d.setFullYear(d.getFullYear() + 1); // dávno v minulosti = příští rok
+        return d;
+    }
+
+    rows.forEach(function (row) {
+        var kdy = row.querySelector('.col-kdy');
+        var d = endDate(kdy && kdy.textContent);
+        if (d && d < today) row.remove();                              // proběhlý event → pryč
+    });
+
+    // Homepage (<body class="home">): z nadcházejících nech jen prvních 5.
+    if (document.body.classList.contains('home')) {
+        Array.prototype.slice.call(document.querySelectorAll('.events-row'))
+            .slice(5)
+            .forEach(function (row) { row.remove(); });
+    }
+})();
+
 /* ─── ARTIST MARQUEE: pevný první batch + náhodné navazující batche ───
    Generuje se PŘED kurzorem a crowd-partingem, aby na nově vzniklé dlaždice
    navázaly stejné interakce. Track = 2 identické poloviny → bezešvý -50% loop. */
