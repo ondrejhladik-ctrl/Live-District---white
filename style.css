@@ -1188,6 +1188,29 @@ body.artist-page .field:hover textarea {
     background:var(--bg-darker);
 }
 
+/* ── Povinné pole nevyplněné/chybné po pokusu o odeslání ──────────────────────
+   Místo nativní bubliny: červené zvýraznění ve STEJNÉM stylu webu (spodní linka
+   jako u ostatních polí) + zviditelněný placeholder se vzorem a „– povinné pole".
+   Třídu .field-invalid přidává/odebírá JS (animations.js) až po pokusu o odeslání. */
+.field.field-invalid input,
+.field.field-invalid textarea {
+    background: rgba(198,40,40,0.05);
+}
+.field.field-invalid label {
+    color: rgba(198,40,40,0.85);
+}
+.field.field-invalid input::placeholder,
+.field.field-invalid textarea::placeholder {
+    color: rgba(198,40,40,0.62);   /* vzorový text + „– povinné pole" červeně a vidět */
+}
+body.poptavka-page .field.field-invalid::after,
+body.artist-page .field.field-invalid::after {
+    background: rgba(198,40,40,0.9);
+    box-shadow: 0 0.0625rem 0.3125rem rgba(198,40,40,0.35);
+    transform: scaleX(1);          /* červená linka natrvalo vidět */
+    transform-origin: left center;
+}
+
 /* ── Parallax: hero se jménem zůstane připnutý (nahoře zůstane vidět pruh
    se jménem + kousek místa), bio se připne pod ním a sekce poptávky přes
    obojí při scrollu najede. --hero-peek = výška viditelného pruhu hero. ── */

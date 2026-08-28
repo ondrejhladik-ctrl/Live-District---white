@@ -421,10 +421,35 @@ document.querySelectorAll('.events-table').forEach(function (table) {
    Platí pro poptávku i formuláře na detailech umělců. */
 (function () {
     var ACCESS_KEY = 'a121576d-a9b9-4a9d-8feb-2aac65e0d819';   // ← příjemce: ondrejhladik7@gmail.com (změna = nový klíč)
+
+    // Vlastní validace místo nativní bubliny: chybné povinné pole zčervená (.field-invalid).
+    // Vrací první chybné pole (nebo null, když je vše OK).
+    function validate(form) {
+        var bad = null;
+        form.querySelectorAll('input, textarea, select').forEach(function (el) {
+            var field = el.closest ? el.closest('.field') : null;
+            var ok = el.checkValidity();
+            if (field) field.classList.toggle('field-invalid', !ok);
+            if (!ok && !bad) bad = el;
+        });
+        return bad;
+    }
+
     document.querySelectorAll('form.inquiry-form').forEach(function (form) {
+        form.setAttribute('novalidate', '');   // vypni nativní bublinu → validaci si řešíme sami
+
+        // jakmile uživatel pole opraví, červené zvýraznění hned zmizí
+        form.addEventListener('input', function (e) {
+            var field = e.target && e.target.closest ? e.target.closest('.field') : null;
+            if (field && field.classList.contains('field-invalid') && e.target.checkValidity()) {
+                field.classList.remove('field-invalid');
+            }
+        });
+
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;  // HTML5 validace
+            var bad = validate(form);
+            if (bad) { bad.focus(); return; }   // něco chybí/špatně → zůstat na stránce, zvýraznit červeně
             var btn = form.querySelector('.form-submit');
             var orig = btn ? btn.textContent : '';
             function reset(msg) { if (btn) { btn.disabled = false; btn.textContent = orig; } if (msg) alert(msg); }
