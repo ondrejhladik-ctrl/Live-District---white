@@ -186,7 +186,7 @@ a { color:inherit; }
     transition: padding 0.5s var(--ease-spring);
 }
 .nav-left, .nav-right { display:flex; align-items:center; gap:clamp(1.5rem, 3.5vw, 6.25rem); min-width:0; }
-/* Krajní odkazy k okrajům obsahu (NEVÁZANÁ POPTÁVKA vlevo, KONTAKT vpravo) → nav je
+/* Krajní odkazy k okrajům obsahu (NEZÁVAZNÁ POPTÁVKA vlevo, KONTAKT vpravo) → nav je
    stejně široký jako obsah stránky. Logo zůstává uprostřed díky gridu 1fr auto 1fr. */
 .nav-left { justify-content:flex-start; }
 .nav-right { justify-content:flex-end; }
