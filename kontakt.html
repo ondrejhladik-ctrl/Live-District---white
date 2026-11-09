@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* JS je k dispozici – nastav třídu co nejdřív (v <head>), aby se reveal-prvky
+       schovaly hned a neproblikly před spuštěním reveal animace. */
+    document.documentElement.classList.add('js');
+    /* Zvolená angličtina: nastav hned, ať před překladem neproblikne čeština (viz i18n.js). */
+    try {
+      var ldLang = localStorage.getItem('ld-lang');
+      if (ldLang === 'en') {
+        var ldRoot = document.documentElement;
+        ldRoot.classList.add('i18n-pending');
+        ldRoot.lang = ldLang;
+        setTimeout(function () { ldRoot.classList.remove('i18n-pending'); }, 2000);
+      }
+    } catch (e) {}
+    /* ADAPTIVNÍ KVALITA FOTEK PODLE RYCHLOSTI SÍTĚ.
+       Běží v <head> ještě PŘED načtením obrázků. Na pomalém připojení zmenší
+       deklarované `sizes` u <source>, takže si prohlížeč vybere menší WebP variantu
+       (méně dat = plynulejší web). Na rychlém připojení nedělá nic = plná kvalita. */
+    (function () {
+      try {
+        var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!c) return;
+        var slow = c.saveData === true
+          || /(^|-)(slow-2g|2g|3g)$/.test(c.effectiveType || '')
+          || (typeof c.downlink === 'number' && c.downlink > 0 && c.downlink < 1.5);
+        if (!slow) return;
+        document.documentElement.classList.add('net-slow');
+
+        // Zmenši cílovou šířku => prohlížeč sáhne po menší variantě ze srcset.
+        // 60vw ořízne zbytečně velké zdroje, aniž by fotka byla rozmazaná.
+        // Strop šířky pro výběr zdroje. Nikdy nezvětšuje (menší fotka v plné šířce
+        // displeje stačí – na pomalé síti je úspora dat důležitější než ostrost na retině).
+        // Mobil: 70vw, tablet: 45vw, desktop: 33vw – vždy ≤ původním hodnotám.
+        var SLOW_SIZES = '(max-width:768px) 70vw, (max-width:1100px) 45vw, 33vw';
+        function shrink(src) {
+          if (src && src.tagName === 'SOURCE' && !src.dataset.netDone) {
+            src.dataset.netDone = '1';
+            src.setAttribute('sizes', SLOW_SIZES);
+          }
+        }
+        // Existující <source> (kdyby head dorazil pozdě) + budoucí (parsované za tímto skriptem).
+        var mo = new MutationObserver(function (muts) {
+          muts.forEach(function (m) {
+            m.addedNodes.forEach(function (n) {
+              if (n.nodeType !== 1) return;
+              if (n.tagName === 'SOURCE') shrink(n);
+              else if (n.querySelectorAll) n.querySelectorAll('source').forEach(shrink);
+            });
+          });
+        });
+        mo.observe(document.documentElement, { childList: true, subtree: true });
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('picture source').forEach(shrink);
+          mo.disconnect();
+        });
+      } catch (e) {}
+    })();
+    </script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; media-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://api.web3forms.com https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Live District — Kontakt</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="canonical" href="https://livedistrict.cz/kontakt">
+    <link rel="preload" href="HelveticaNeueLTProBdEx.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="HelveticaNeueLTProBd.otf" as="font" type="font/otf" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <script src="i18n.js" defer></script>
+    <script src="animations.js" defer></script>
+</head>
+<body class="subpage">
+
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <img src="logo dirtict.svg" alt="Live District" class="preloader-logo-img">
+            <div class="preloader-line"></div>
+        </div>
+    </div>
+
+    <header class="subpage-header">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="poptavka" class="nav-link">NEZÁVAZNÁ POPTÁVKA</a>
+                <a href="eventy" class="nav-link">EVENTY</a>
+            </div>
+            <div class="nav-center">
+                <a href="/"><img src="logo dirtict.svg" alt="Live District Logo" class="logo"></a>
+            </div>
+            <div class="nav-right">
+                <a href="umelci" class="nav-link">UMĚLCI</a>
+                <a href="tym" class="nav-link">TÝM</a>
+                <a href="kontakt" class="nav-link">KONTAKT</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="page-main">
+        <section class="events-page-section">
+            <div class="container">
+                <h1 class="events-page-title">KONTAKT</h1>
+
+                <div class="contact-table">
+                    <div class="contact-row">
+                        <div class="col-jmeno">DYLAN DAHAN</div>
+                        <div class="col-telefon"><a href="tel:+420733123616">+420 733 123 616</a></div>
+                        <div class="col-email"><a href="mailto:booking@livedistrict.eu">booking@livedistrict.eu</a></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+            <footer class="site-footer" id="kontakt">
+        <div class="footer-top">
+            <a href="/" class="footer-logo">
+                <img src="logo dirtict.svg" alt="Live District">
+            </a>
+            <nav class="footer-nav">
+                <a href="eventy">EVENTY</a>
+                <a href="umelci">UMĚLCI</a>
+                <a href="poptavka">NEZ&Aacute;VAZN&Aacute;&nbsp;POPT&Aacute;VKA</a>
+                <a href="tym">T&Yacute;M</a>
+            </nav>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <span>&#169;2026 LIVE DISTRICT</span>
+                <span class="separator">&#8226;</span>
+                <span>Booking a management současných umělců.</span>
+            </div>
+            <div class="footer-bottom-right">
+                <a href="mailto:booking@livedistrict.eu">booking@livedistrict.eu</a>
+                <span class="separator">&#8226;</span>
+                <span>IČO: 01744933</span>
+                <span class="separator">&#8226;</span>
+                <a href="ochrana-osobnich-udaju">Ochrana osobních údajů</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var pl = document.getElementById('preloader');
+            if (!pl) return;
+            // Loading screen jen při REFRESHI nebo prvním/externím vstupu –
+            // NE při prokliku mezi vlastními stránkami (tam by jen otravoval).
+            (function () {
+                var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || null;
+                var navType = nav ? nav.type : (performance.navigation && performance.navigation.type === 1 ? 'reload' : 'navigate');
+                var internal = false;
+                try {
+                    internal = document.referrer && new URL(document.referrer).host === location.host;
+                } catch (e) {}
+                // reload => vždy ukázat; jinak skrýt, pokud přicházíme z vlastní stránky
+                if (navType !== 'reload' && navType !== 'back_forward' && internal) {
+                    pl.style.display = 'none';
+                    pl._skip = true;
+                }
+            })();
+            if (pl._skip) return;
+            var minShow = 700, maxShow = 4000, t0 = Date.now(), done = false;
+            function hide() {
+                if (done) return;
+                done = true;
+                var wait = Math.max(0, minShow - (Date.now() - t0));
+                setTimeout(function () {
+                    pl.classList.add('is-hidden');
+                    setTimeout(function () { pl.style.display = 'none'; }, 750);
+                }, wait);
+            }
+            if (document.readyState === 'complete') { hide(); } else { window.addEventListener('load', hide); }
+            setTimeout(hide, maxShow);
+        })();
+    </script>
+    <script>
+        (function () {
+            var els = Array.prototype.slice.call(document.querySelectorAll('.reveal, .title-reveal'));
+            function show(el) { el.classList.add('in'); }
+
+            // Cokoliv, co je při načtení už ve viewportu nebo nad ním, odhal HNED
+            // (jinak by velký reveal-blok na vrcholu stránky zůstal skrytý = bílá plocha).
+            function revealInView() {
+                var vh = window.innerHeight || document.documentElement.clientHeight;
+                els.forEach(function (el) {
+                    if (el.classList.contains('in')) return;
+                    var r = el.getBoundingClientRect();
+                    if (r.top < vh * 0.9) show(el);   // horní hrana je (skoro) ve viewportu
+                });
+            }
+
+            if (!('IntersectionObserver' in window)) {
+                els.forEach(show);   // starý prohlížeč – ukaž vše
+            } else {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) { show(e.target); io.unobserve(e.target); }
+                    });
+                }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+                els.forEach(function (el) { io.observe(el); });
+                revealInView();                                 // hned po startu
+                window.addEventListener('load', revealInView);  // po načtení (preloader pryč)
+            }
+        })();
+    </script>
+    <script>
+        /* E-mail: kdo nemá nastavený poštovní program, by po kliku na mailto nic neviděl →
+           adresu zároveň zkopírujeme do schránky a krátce to oznámíme. mailto se otevře dál. */
+        (function () {
+            document.querySelectorAll('.contact-table a[href^="mailto:"]').forEach(function (a) {
+                var tip, timer;
+                a.addEventListener('click', function () {
+                    var mail = a.getAttribute('href').replace(/^mailto:/, '');
+                    if (navigator.clipboard) navigator.clipboard.writeText(mail).catch(function () {});
+                    if (!tip) {
+                        tip = document.createElement('span');
+                        tip.className = 'copy-tip';
+                        tip.setAttribute('role', 'status');
+                        tip.textContent = window.ldT ? window.ldT('Zkopírováno') : 'Zkopírováno';
+                        a.appendChild(tip);
+                    }
+                    tip.classList.add('is-visible');
+                    clearTimeout(timer);
+                    timer = setTimeout(function () { tip.classList.remove('is-visible'); }, 2000);
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>
+
+
