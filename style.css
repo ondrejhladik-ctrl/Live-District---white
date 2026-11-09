@@ -1690,7 +1690,7 @@ html.i18n-pending body { visibility:hidden; }   /* ať neproblikne čeština př
 /* Kontakt: jeden řádek (písmo jako Eventy, bez popisků a linek);
    telefon a e-mail se na hover podtrhnou */
 .contact-section { min-height:100vh; min-height:100svh; }   /* patička až pod okrajem obrazovky */
-.contact-title { text-align:left; }
+.contact-title { text-align:left; margin-bottom:clamp(4rem, 11vh, 7.5rem); }
 .contact-row {
     display:grid; grid-template-columns:1.3fr 1.5fr 2fr; column-gap:2rem; align-items:center;
     height:3.8125rem; padding:0;
