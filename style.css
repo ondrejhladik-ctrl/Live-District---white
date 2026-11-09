@@ -1664,48 +1664,6 @@ html.is-scrolled .artist-page .top-nav .nav-link::after {
 }
 
 /* =========================================================
-   COOKIES – lišta se souhlasem + náhrada videa bez souhlasu
-   ========================================================= */
-.cookie-banner {
-    position:fixed; left:50%; bottom:1.25rem; z-index:10000;   /* pod preloaderem a mobilním menu */
-    transform:translateX(-50%);
-    width:min(52rem, calc(100% - 2rem));
-    display:flex; flex-direction:column; gap:1rem;
-    padding:1.5rem 1.75rem;
-    background:#fff; color: var(--ink);
-    border:0.0625rem solid var(--border-mid); border-radius: var(--radius);
-    box-shadow:0 0.5rem 2rem rgba(0,0,0,0.12);
-    font-family: var(--font-light); font-size:0.9375rem; line-height:1.5;
-}
-.cookie-banner a { color:inherit; text-decoration:underline; }
-.cookie-options { display:flex; flex-wrap:wrap; gap:0.5rem 1.75rem; }
-.cookie-options label { display:inline-flex; align-items:center; gap:0.5rem; }
-.cookie-options input { width:1rem; height:1rem; accent-color: var(--ink); }
-.cookie-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0.75rem; }
-.cookie-actions .btn-outline,
-.embed-consent .btn-outline { padding:0.875rem 1.5rem; font-size:0.75rem; }
-
-.release-embed { position:relative; }
-.embed-consent {
-    position:absolute; inset:0;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.25rem;
-    padding:1.25rem; text-align:center;
-    background:#000; color:#fff; font-family: var(--font-light);
-}
-.embed-consent-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; }
-.embed-consent .btn-outline { color:#fff; border-color:rgba(255,255,255,0.4); }
-.embed-consent .btn-outline:hover { background:#fff; color:#000; border-color:#fff; }
-.cookie-banner[hidden], .embed-consent[hidden] { display:none; }
-
-@media (max-width:768px) {
-    .cookie-banner { gap:0.75rem; padding:1.25rem; bottom:1rem; font-size:0.875rem; }
-    .cookie-actions { gap:0.5rem; }
-    .cookie-actions .btn-outline { flex:1 1 auto; padding:0.75rem 0.5rem; font-size:0.6875rem; text-align:center; }
-    .embed-consent { gap:0.75rem; padding:0.75rem; font-size:0.875rem; }
-    .embed-consent .btn-outline { padding:0.625rem 0.875rem; font-size:0.6875rem; }
-}
-
-/* =========================================================
    JAZYKY – výběr v mobilním menu (vytváří i18n.js)
    ========================================================= */
 html.i18n-pending body { visibility:hidden; }   /* ať neproblikne čeština před překladem */
@@ -1731,9 +1689,11 @@ html.i18n-pending body { visibility:hidden; }   /* ať neproblikne čeština př
 
 /* Kontakt: jeden řádek (písmo jako Eventy, bez popisků a linek);
    telefon a e-mail se na hover podtrhnou */
+.contact-section { min-height:100vh; min-height:100svh; }   /* patička až pod okrajem obrazovky */
+.contact-title { text-align:left; }
 .contact-row {
     display:grid; grid-template-columns:1.3fr 1.5fr 2fr; column-gap:2rem; align-items:center;
-    height:3.8125rem; padding:0 0.75rem;
+    height:3.8125rem; padding:0;
     font-family: var(--font-light); font-size:clamp(1.125rem, 2.3vw, 2.25rem); line-height:1;
 }
 .contact-row .col-jmeno { font-family: var(--font-extended-53); color: var(--ink); }
@@ -1747,7 +1707,7 @@ html.i18n-pending body { visibility:hidden; }   /* ať neproblikne čeština př
 }
 .contact-row a:hover::after { transform:scaleX(1); }
 @media (max-width:768px) {
-    .contact-row { grid-template-columns:1fr; row-gap:0.5rem; height:auto; padding:1.125rem 0.5rem; }
+    .contact-row { grid-template-columns:1fr; row-gap:0.5rem; height:auto; padding:1.125rem 0; }
     .contact-row .col-jmeno { font-size:1.1875rem; }
     .contact-row .col-telefon,
     .contact-row .col-email { font-size:1.0625rem; text-align:left; }
