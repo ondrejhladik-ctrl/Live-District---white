@@ -20,7 +20,8 @@
         "BOOKING A MANAGEMENT": "BOOKING AND MANAGEMENT",
         "SOUČASNÝCH UMĚLCŮ": "OF CONTEMPORARY ARTISTS",
         "IČO: 01744933": "Company ID: 01744933",
-        "Ochrana osobních údajů": "Privacy policy",
+        "DIČ: CZ01744933": "VAT ID: CZ01744933",
+        "FAKTURAČNÍ ÚDAJE": "BILLING DETAILS",        "Ochrana osobních údajů": "Privacy policy",
 
         /* Názvy stránek */
         "Eventy": "Events",

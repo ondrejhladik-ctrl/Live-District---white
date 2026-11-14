@@ -1691,13 +1691,20 @@ html.i18n-pending body { visibility:hidden; }   /* ať neproblikne čeština př
    telefon a e-mail se na hover podtrhnou */
 .contact-section { min-height:100vh; min-height:100svh; }   /* patička až pod okrajem obrazovky */
 .contact-title { text-align:left; margin-bottom:clamp(4rem, 11vh, 7.5rem); }
-.contact-row {
-    display:grid; grid-template-columns:1.3fr 1.5fr 2fr; column-gap:2rem; align-items:center;
-    height:3.8125rem; padding:0;
-    font-family: var(--font-light); font-size:clamp(1.125rem, 2.3vw, 2.25rem); line-height:1;
+.contact-table {
+    display:grid; grid-template-columns:0.8fr 1fr; column-gap:3rem; align-items:start;
 }
-.contact-row .col-jmeno { font-family: var(--font-extended-53); color: var(--ink); }
-.contact-table .col-email { text-align:right; }
+.contact-row {
+    display:flex; flex-direction:column; align-items:flex-start; row-gap:0.45rem;
+    font-family: var(--font-light); font-size:clamp(1rem, 1.5vw, 1.375rem); line-height:1.25;
+}
+.contact-row .col-jmeno { font-family: var(--font-extended-53); font-size:clamp(1.125rem, 2.3vw, 2.25rem); line-height:1.1; color: var(--ink); }
+.contact-row .col-role { margin-bottom:0.9rem; color: var(--ink); }
+.contact-company {
+    display:flex; flex-direction:column; align-items:flex-start; row-gap:0.45rem;
+    font-family: var(--font-light); font-size:clamp(1rem, 1.5vw, 1.375rem); line-height:1.25;
+    color: var(--ink);
+}
 .contact-row a { position:relative; color: var(--ink); text-decoration:none; }
 .contact-row a::after {
     content:''; position:absolute; left:0; right:0; bottom:-0.25rem;
@@ -1706,11 +1713,16 @@ html.i18n-pending body { visibility:hidden; }   /* ať neproblikne čeština př
     transition:transform 0.45s var(--ease-out);
 }
 .contact-row a:hover::after { transform:scaleX(1); }
+.contact-row .col-telefon a,
+.contact-row .col-email a { color: var(--text-dim-2); transition:color 0.45s var(--ease-out); }
+.contact-row .col-telefon a:hover,
+.contact-row .col-email a:hover { color: var(--ink); }
 @media (max-width:768px) {
-    .contact-row { grid-template-columns:1fr; row-gap:0.5rem; height:auto; padding:1.125rem 0; }
+    .contact-table { grid-template-columns:1fr; row-gap:2.5rem; }
+    .contact-row { font-size:1rem; }
     .contact-row .col-jmeno { font-size:1.1875rem; }
-    .contact-row .col-telefon,
-    .contact-row .col-email { font-size:1.0625rem; text-align:left; }
+    .contact-table { row-gap:4rem; }
+    .contact-company { font-size:1rem; }
 }
 
 /* Výběr jazyka v patičce (vytváří i18n.js) – stejné písmo jako odkazy patičky */
